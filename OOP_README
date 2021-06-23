@@ -1,0 +1,4 @@
+Am construit o aplicatie folositoare atat administratorului magazinului de acvaristica cat si utilizatorului.
+Astfel, administratorul poate sa adauge in stoc acvarii cu tot cu specificatiile lor, cat si costul. Adim-ul poate manageriza stocul de pesti de apa dulce, de apa sarata, nevertebrate si plante. Odata ce vietuitoarele sunt adaugate in sistem, odata cu ele sunt obligatorii de introdus si parametrii apei la momentul dat, pentru o mai buna monitorizare a eventualelor probleme.
+Clientul are posibilitatea de a consulta stocul valabil, dar si a trimite o comanda custom catre administrator, urmand a fi creat un acvariu cu forma si dimensiuni unice.
+Daca clientul selecteaza in cos 2 acvarii, apoi doreste sa cumpere si substraturi, aplicatia calculeaza automat numarul de kilograme recomandate de acvaristii profesionisti pentru o inradacinare cat mai sanatoasa a plantelor.
