@@ -1,0 +1,3391 @@
+///aplicatie de gestionare magazin acvaristica
+#include<iostream>
+#include<cmath>
+#include<fstream>
+#include<string.h>
+#include<string>
+#include <bits/stdc++.h>
+#include<vector>
+#include<list>
+#include<set>
+#include<map>
+#include<iterator>
+using namespace std;
+//ifstream f("ala.in");
+//ofstream g("bala.out");
+class Pesti;
+class acvariu
+{
+protected:
+    float lungime,latime,inaltime,raza; ///facut ~merge
+    char* forma;///facut ~merge
+private:
+
+    double litri; ///facut ~merge
+    int nrpesti,nraccesorii,nrrecenzii;///facut ~merge
+    bool capac;///facut ~merge
+    bool isadmina;
+    int* pretaccesorii;///facut ~merge
+    int prettotal;
+    string* numeaccesorii;///~merge
+    char rating;///facut ~merge
+    string numeproducator;///facut ~merge
+    float* toaterecenziile;///facut ~merge
+    const int CodDeBare;///facut ~merge
+
+
+public:
+    static int contorid;
+    friend ostream& operator<<(ostream& out,const acvariu& ac);///operator <<
+    friend istream& operator>>(istream& in,acvariu& ac);///operator >>
+    const acvariu& operator++();  /// operator ++ pre
+    const acvariu operator++(int); ///operator ++ post
+    const acvariu& operator--(int);///operator --
+    void citire();
+    void afisare();
+///getter float
+    float getlungime()
+    {
+        return lungime;
+    }
+    float getlatime()
+    {
+        return latime;
+    }
+    float getinaltime()
+    {
+        return inaltime;
+    }
+    float getraza()
+    {
+        return raza;
+    }
+///setter float
+    void setlungime(float L)
+    {
+        this->lungime=L;
+    }
+    void setlatime(float l)
+    {
+        this->latime=l;
+    }
+    void setinaltime(float h)
+    {
+        this->inaltime=h;
+    }
+    void setraza(float r)
+    {
+        this->raza=r;
+    }
+///getter double -> litri(volum)
+    double getlitri()
+    {
+        return litri;
+    }
+///setter double -> litri(volum)
+    void setlitri  (double volum)
+    {
+        this->litri=volum;
+    }
+///getter int
+    int getnrpesti()
+    {
+        return nrpesti;
+    }
+    int getnraccesorii()
+    {
+        return this->nraccesorii;
+    }
+    int getnrrecenzii()
+    {
+        return this->nrrecenzii;
+    }
+///setter int
+    void setnrpesti(int nr)
+    {
+        this->nrpesti=nr;
+    }
+    void setnraccesorii(int nraccesorii)
+    {
+        this->nraccesorii=nraccesorii;
+    }
+    void setnrrecenzii(int nrrecenzii)
+    {
+        this->nrrecenzii=nrrecenzii;
+    }
+///getter char*
+    char* getforma()
+    {
+        return this->forma;
+    }
+///setter char*
+    void setforma(char* nume_forma_noua)
+    {
+        if(this->forma!=NULL)
+            delete[] this->forma;
+        this->forma=new char[strlen(nume_forma_noua)+1];
+        strcpy(forma,nume_forma_noua);
+    }
+///getter int*
+    int* getpretaccesorii()
+    {
+        return this->pretaccesorii;
+    }
+///setter int*
+    void setpretaccesorii(int*pretaccesorii,int n)
+    {
+        this->nraccesorii=n;
+        if(this->pretaccesorii!=NULL)
+            delete[] this->pretaccesorii;
+        this->pretaccesorii=new int[n];
+        for(int i=0; i<this->nraccesorii; i++)                   ///<---------
+            this->pretaccesorii[i]=pretaccesorii[i];
+    }
+    ///getter isadmin
+    bool getisadmina()
+    {
+        return isadmina;
+    }
+///setter isadmin
+    void setisadmina(bool b)
+    {
+        this->isadmina=b;
+    }
+///getter char
+    char getrating()
+    {
+        return this->rating;
+    }
+///setter char
+    void setrating(char score)
+    {
+        this->rating=score;                                         ///<------------------
+    }
+///getter string
+    string getnumeproducator()
+    {
+        return this->numeproducator;
+    }
+///setter string
+    void setnumeproducator(string firma)
+    {
+        this->numeproducator=firma;
+    }
+///getter string*
+    string* getstringstelutza()
+    {
+        return this->numeaccesorii;
+    }
+///setter string*
+    void setstringstelutza(string* numeaccesorii,int n)
+    {
+        this->nraccesorii=n;
+        if(this->numeaccesorii!=NULL)
+            delete[] this->numeaccesorii;
+        this->numeaccesorii=new string[n];                     ///<-----------------------
+        for(int i=0; i<n; i++)
+            this->numeaccesorii[i]=numeaccesorii[i];
+
+
+    }
+///getter float*
+    float* gettoaterecenziile()
+    {
+        return this->toaterecenziile;
+    }
+///setter float*
+    void settoaterecenziile(float* toaterecenziile,int n)
+    {
+        this->nrrecenzii=n;
+        if(this->toaterecenziile!=NULL)
+            delete[] this->toaterecenziile;      ///<------------aici!!!!!!!!!! imi trebuie 'delete' doar daca fac constructori (altfel nu) ---de ce?
+        this->toaterecenziile=new float[n];
+        for(int i=0; i<n; i++)
+            this->toaterecenziile[i]=toaterecenziile[i];
+
+    }
+///getter prettotal
+    int getprettotal()
+    {
+        return this->prettotal;
+    }
+///setter prettotal
+    void setprettotal(int s)
+    {
+        this->prettotal=s;
+    }
+///constructor fara parametrii         (niciunul)
+    acvariu():CodDeBare(contorid++)
+    {
+        this->prettotal=0;
+        this->lungime=0;
+        this->latime=0;
+        this->inaltime=0;
+        this->raza=0;
+        this->litri=0;
+        this->capac=false;
+        this->forma=new char[strlen("Nedeterminata")+1];
+        strcpy(this->forma,"Nedeterminata");
+        this->nrpesti=0;
+        this->nraccesorii=0;
+        this->nrrecenzii=0;
+        this->pretaccesorii=NULL;
+        this->numeaccesorii=NULL;
+        this->rating='/';
+        this->numeproducator="camp indisponibil";
+        this->toaterecenziile=NULL;
+
+
+    }
+///constructor cu parametri          V1(cativa)
+    acvariu(float lungime,float latime, float inaltime,bool capac):CodDeBare(contorid++)
+    {
+        this->lungime=lungime;
+        this->latime=latime;
+        this->inaltime=inaltime;
+        this->raza=0;
+        this->litri=0;
+        this->capac=capac;
+        this->forma=new char[strlen("Nedeterminata")+1];
+        strcpy(this->forma,"Nedeterminata");
+        this->nrpesti=0;
+        this->nraccesorii=0;
+        this->nrrecenzii=0;
+        this->pretaccesorii=NULL;
+        this->numeaccesorii=NULL;
+        this->rating='/';
+        this->numeproducator="camp indisponibil";
+        this->toaterecenziile=NULL;
+
+    }
+///constructor cu parametri          V2(toti)
+    acvariu(float lungime, float inaltime, float latime,float raza, bool capac, double litri, char* forma,int nrpesti,int nraccesorii,int nrrecenzii,int* pretaccesorii,int prettotal,string*numeaccesorii,char rating,string numeproducator,float* toaterecenziile):CodDeBare(contorid++)
+    {
+        this->prettotal=prettotal;
+        this->lungime=lungime;
+        this->latime=latime;
+        this->raza=raza;
+        this->inaltime=inaltime;
+        this->capac=capac;
+        this->litri=litri;
+        this->nrpesti=nrpesti;
+        this->forma=new char[strlen(forma)+1];
+        strcpy(this->forma,forma);
+        this->nraccesorii=nraccesorii;
+        this->nrrecenzii=nrrecenzii;
+
+        this->pretaccesorii=new int[this->nraccesorii];
+        for(int i=0; i<nraccesorii; i++)
+            this->pretaccesorii[i]=pretaccesorii[i];
+
+        this->numeaccesorii=new string[this->nraccesorii];
+        for(int i=0; i<nraccesorii; i++)
+            this->numeaccesorii[i]=numeaccesorii[i];
+
+        this->rating=rating;
+        this->numeproducator=numeproducator;
+        this->toaterecenziile=new float[this->nrrecenzii];
+        for(int i=0; i<nrrecenzii; i++)
+            this->toaterecenziile[i]=toaterecenziile[i];
+
+
+
+    }
+///copyconstructor
+    acvariu(const acvariu& obj):CodDeBare(obj.CodDeBare)
+    {
+        this->prettotal=obj.prettotal;
+        this->lungime=obj.lungime;
+        this->latime=obj.latime;
+        this->raza=obj.raza;
+        this->inaltime=obj.inaltime;
+        this->capac=obj.capac;
+        this->litri=obj.litri;
+        this->nrpesti=obj.nrpesti;
+        this->forma=new char[strlen(obj.forma)+1];
+        strcpy(this->forma,obj.forma);
+        this->nraccesorii=obj.nraccesorii;
+        this->nrrecenzii=obj.nrrecenzii;
+        this->pretaccesorii=new int[obj.nraccesorii];
+        for(int i=0; i<this->nraccesorii; i++)
+            this->pretaccesorii[i]=obj.pretaccesorii[i];
+        this->numeaccesorii=new string[obj.nraccesorii];
+        for(int i=0; i<this->nraccesorii; i++)
+            this->numeaccesorii[i]=obj.numeaccesorii[i];
+        this->rating=obj.rating;
+        this->numeproducator=obj.numeproducator;
+        this->toaterecenziile=new float[obj.nrrecenzii];
+        for(int i=0; i<this->nrrecenzii; i++)
+            this->toaterecenziile[i]=obj.toaterecenziile[i];
+    }
+///destructor
+    ~acvariu()
+    {
+        if(this->forma!=NULL)
+            delete[] this->forma;
+        if(this->toaterecenziile!=NULL)
+            delete[] this->toaterecenziile;
+        if(this->numeaccesorii!=NULL)
+            delete[] this->numeaccesorii;
+        if(this->pretaccesorii!=NULL)
+            delete[] this->pretaccesorii;
+
+    }
+
+///operatorul =
+    acvariu& operator= (const acvariu& obj)
+    {
+        if(this!=&obj)
+        {
+            if(this->forma!=NULL)
+                delete[] this->forma;
+            if(this->toaterecenziile!=NULL)
+                delete[] this->toaterecenziile;
+            if(this->numeaccesorii!=NULL)
+                delete[] this->numeaccesorii;
+            if(this->pretaccesorii!=NULL)
+                delete[] this->pretaccesorii;
+            this->lungime=obj.lungime;
+            this->latime=obj.latime;
+            this->raza=obj.raza;
+            this->inaltime=obj.inaltime;
+            this->prettotal=obj.prettotal;
+            this->capac=obj.capac;
+            this->litri=obj.litri;
+            this->nrpesti=obj.nrpesti;
+            this->forma=new char[strlen(obj.forma)+1];
+            strcpy(this->forma,obj.forma);
+            this->nraccesorii=obj.nraccesorii;
+            this->nrrecenzii=obj.nrrecenzii;
+            this->pretaccesorii=new int[obj.nraccesorii];
+            for(int i=0; i<obj.nraccesorii; i++)
+                this->pretaccesorii[i]=obj.pretaccesorii[i];
+            this->numeaccesorii=new string[obj.nraccesorii];
+            for(int i=0; i<obj.nraccesorii; i++)
+                this->numeaccesorii[i]=obj.numeaccesorii[i];
+            this->rating=obj.rating;
+            this->numeproducator=obj.numeproducator;
+            this->toaterecenziile=new float[obj.nrrecenzii];
+            for(int i=0; i<obj.nrrecenzii; i++)
+                this->toaterecenziile[i]=obj.toaterecenziile[i];
+        }
+        return *this;
+    }
+    ///overload operatorul +
+    acvariu operator+(acvariu ac)
+    {
+
+        acvariu aux(*this);
+        // cout<<"!!!!!!!!!!!!!!!!!!!"<<endl<<aux.prettotal;
+        //cout<<endl<<"!!"<<obj.prettotal;
+        cout<<"!!!!!!!!!!!!!!!!!!!!!!!!!!"<<aux.prettotal<<" "<<ac.prettotal;
+        aux.prettotal=aux.prettotal+ac.prettotal;
+
+        return aux;
+    }
+    ///overload operatorul - (de revenit pentru a-l folosi in mod util)
+    acvariu operator-(acvariu ac)
+    {
+        acvariu aux(*this);
+        aux.prettotal=aux.prettotal-ac.prettotal;
+        return aux;
+    }
+};
+//////////////////////////////////      I
+/////////////////////////////////       I
+////////////////////////////////        I    ACVARIU
+///////////////////////////////         I
+//////////////////////////////          V
+
+int acvariu::contorid=500;
+///forward declaration of functionalities for 'acvariu' class
+
+int sumadeachitat(acvariu ac);
+char calculareratingacvariu(acvariu ac);
+double  numarpestiperlitru(acvariu ac,double volum);
+int pretacv(acvariu ac);
+///overload operator >>
+istream& operator>>(istream& in,  acvariu& ac)
+{
+    bool client;
+    //cout<<"DACA ESTI CLIENT PUNE 0!! "<<endl;           ///temporary quick fix
+    //in>>client;
+    cout<<endl<<"Forma bazei:  (Patrat/Cerc/Dreptunghi) ";
+    float volum=0;
+    char aux[100];
+    in>>aux;
+    if(ac.forma!=NULL)
+        delete[] ac.forma;
+    ac.forma=new char[strlen(aux)+1];
+    strcpy(ac.forma,aux);
+    ac.setforma(aux);
+    if(strcmp("patrat",strlwr(ac.forma))==0)
+    {
+        cout<<endl<<"Dimensiuni: Latura(l)/Inaltime(h)"<<endl;
+        cout<<"l= ";
+        in>>ac.lungime;
+        cout<<endl<<"h= ";
+        in>>ac.inaltime;
+        volum=ac.lungime*ac.lungime*ac.inaltime;
+    }
+    else if(strcmp("cerc",strlwr(ac.forma))==0)
+    {
+        cout<<endl<<"Dimensiuni: Raza(r)/Inaltime(h)"<<endl;
+        cout<<"r= ";
+        in>>ac.raza;
+        cout<<endl<<"h= ";
+        in>>ac.inaltime;
+        volum=(ac.raza*ac.raza*3,14)*ac.inaltime;
+    }
+    else if(strcmp("dreptunghi",strlwr(ac.forma))==0)
+    {
+        cout<<endl<<"Dimensiuni: Lungime(L)/Latime(l)/Inaltime(h)"<<endl;
+        cout<<"L= ";
+        in>>ac.lungime;
+        cout<<endl<<"l= ";
+        in>>ac.latime;
+        cout<<endl<<"h= ";
+        in>>ac.inaltime;
+        volum=ac.lungime*ac.latime*ac.inaltime;
+    }
+
+    cout<<endl<<"Cu/Fara capac: ";
+    in>>ac.capac;
+    if(ac.isadmina)
+    {
+        cout<<endl<<"Numar accesorii cumparate: ";
+        in>>ac.nraccesorii;
+        cout<<endl<<"Accesorii achizitionate: ";
+
+
+
+        if(ac.numeaccesorii!=NULL)
+            delete[] ac.numeaccesorii;
+        ac.numeaccesorii=new string[ac.nraccesorii];
+        for(int i=0; i<ac.nraccesorii; i++)
+            in>>ac.numeaccesorii[i];
+        cout<<endl<<"Pret accesorii: ";
+        if(ac.pretaccesorii!=NULL)
+        {
+            delete[] ac.pretaccesorii;
+        }
+        ac.pretaccesorii=new int[ac.nraccesorii];
+        for(int i=0; i<ac.nraccesorii; i++)
+        {
+            cout<<endl<<ac.numeaccesorii[i]<<" costa- ";
+            in>>ac.pretaccesorii[i];
+        }
+
+        cout<<endl<<"Nume producator: ";
+        getline(in>> ws,ac.numeproducator);
+        cout<<endl<<"Numar Recenzii: ";
+        in>>ac.nrrecenzii;
+        cout<<endl<<"Toate Review-urile: ";
+        if(ac.toaterecenziile!=NULL)
+            delete[] ac.toaterecenziile;
+        ac.toaterecenziile=new float[ac.nrrecenzii];
+        for(int i=0; i<ac.nrrecenzii; i++)
+        {
+            cout<<endl<<"Utilizatorul "<<i+1<<" a acordat acestui acvariu nota: ";
+            in>>ac.toaterecenziile[i];
+        }
+    }
+    double d=numarpestiperlitru(ac,volum);
+
+    if(d)
+        cout<<endl<<"Numarul recomandat de pesti introdusi in acest acvariu este de: "<<d;                  ///cumva aici e ceva gresit cu ce returneaza functia pentru cilindru(edit2:e gresita formula)(sa revin)
+    else
+        cout<<endl<<"Acest acvariu este prea mic pentru a suporta viata";
+    cout<<endl<<"Numarul de pesti doriti in acvariu: ";
+    in>>ac.nrpesti;
+    ac.setprettotal(sumadeachitat(ac));
+
+    return in;
+}
+///alternative pentru citire/afisare
+/*void acvariu::citire()
+{
+    cout<<endl<<"Forma: ";
+    char aux[100];
+    cin>>aux;
+    if(this->forma!=NULL)
+        delete[] this->forma;
+    this->forma=new char[strlen(aux)+1];
+    strcpy(this->forma,aux);
+    cout<<endl<<"Dimensiuni: ";
+    cin>>this->latime>>this->lungime>>this->inaltime;///cerc??
+    cout<<endl<<"Cu/Fara capac: ";
+    cin>>this->capac;
+    cout<<endl<<"Numar accesorii cumparate: ";
+    cin>>this->nraccesorii;
+    cout<<endl<<"Accesorii achizitionate: ";
+    if(this->numeaccesorii!=NULL)
+        delete[] this->numeaccesorii;
+    this->numeaccesorii=new string[this->nraccesorii];
+    for(int i=0; i<this->nraccesorii; i++)
+        cin>>this->numeaccesorii[i];
+    cout<<endl<<"Pret accesorii: ";
+    ///if(this->pretaccesorii!=NULL)
+     ///   delete[] this->pretaccesorii;
+   /// for(int i=0; i<this->nraccesorii; i++)
+      ///  cin>>this->pretaccesorii[i];
+    cout<<endl<<"Nume producator: ";
+    cin>>this->numeproducator;
+    cout<<endl<<"Rating: ";
+    cin>>this->rating;
+    cout<<endl<<"Numar Recenzii: ";
+    cin>>this->nrrecenzii;
+    cout<<endl<<"Toate Review-urile: ";
+   // if(this->toaterecenziile!=NULL)
+    //    delete[] this->toaterecenziile;
+    //for(int i=0; i<this->nrrecenzii; i++)
+      //  cin>>this->toaterecenziile[i];
+}*/
+/*void acvariu::afisare()
+{
+    cout<<endl<<"Forma: "<<this->forma;
+    cout<<endl<<"Dimensiuni: "<<this->latime<<", "<<this->inaltime<<", "<<this->lungime;
+    cout<<endl<<"Cu/Fara capac: ";
+    if(this->capac)
+        cout<<"Cu capac";
+    else
+        cout<<"Fara capac";
+    cout<<endl<<"Numar accesorii: "<<this->nraccesorii;
+    cout<<endl<<"Accesorii achizitionate: ";
+    for(int i=0; i<this->nraccesorii; i++)
+        cout<<this->numeaccesorii[i]<<", ";
+    cout<<endl<<"Pret accesorii achizitionate: ";
+    for(int i=0; i<this->nraccesorii; i++)
+        cout<<this->pretaccesorii[i]<<", ";
+    cout<<endl<<"Nume producator: "<<this->numeproducator;
+    cout<<endl<<"Rating: "<<this->rating;
+    cout<<endl<<"Numar recenzii: "<<this->nrrecenzii;
+    cout<<endl<<"Toate review-urile: ";
+    for(int i=0; i<this->nrrecenzii; i++)
+        cout<<this->toaterecenziile[i]<<", ";
+}
+*/
+
+
+
+///overload operator <<
+ostream& operator <<(ostream& out,const acvariu& ac)
+{
+    float volum=0;
+    out<<"\nForma bazei: (Patrat/Cerc/Dreptunghi) "<<ac.forma;
+    out<<"\nCod de bare generat: "<<ac.CodDeBare;
+    out<<"\nDimensiuni: ";
+    if(strcmp("patrat",strlwr(ac.forma))==0)
+    {
+        out<<"l= "<<ac.lungime;
+        volum=ac.lungime*ac.lungime*ac.inaltime;
+        out<<endl<<"h= "<<ac.inaltime;
+
+    }
+    else if(strcmp("cerc",strlwr(ac.forma))==0)
+    {
+        out<<"r= "<<ac.raza;
+        volum=(ac.raza*ac.raza*3.14)*ac.inaltime;
+        out<<"\nh= "<<ac.inaltime;
+    }
+    else if(strcmp("dreptunghi",strlwr(ac.forma))==0)
+    {
+        out<<"\nL= "<<ac.lungime;
+        out<<"\nl= "<<ac.latime;
+        out<<"\nh= "<<ac.inaltime;
+        volum=ac.lungime*ac.inaltime*ac.latime;
+    }
+
+    out<<"\nCu/Fara capac: ";
+    if(ac.capac)
+        out<<"Cu capac";
+    else
+        out<<"Fara capac";
+    out<<"\nNumar accesorii: "<<ac.nraccesorii;
+    for(int i=0; i<ac.nraccesorii; i++)
+        out<<endl<<ac.numeaccesorii[i];
+    out<<"\nPret accesorii achizitionate: ";
+    for(int i=0; i<ac.nraccesorii; i++)
+        out<<ac.pretaccesorii[i]<<", ";
+    out<<"\nNume producator: "<<ac.numeproducator;
+    out<<"\nNumar recenzii: "<<ac.nrrecenzii;
+    out<<"\nToate review-urile: ";
+    for(int i=0; i<ac.nrrecenzii; i++)
+        out<<ac.toaterecenziile[i]<<", ";
+    ///!!!!!!!!!
+    char r=calculareratingacvariu(ac);
+    double d=numarpestiperlitru(ac,volum);
+    int uof=pretacv(ac);
+    //out<<"\n PRETUL ACVARIULUI ESTE: "<<uof;
+
+    if(d)
+        out<<"\nNumarul recomandat de pesti introdusi in acest acvariu este de: "<<d;
+    else
+        out<<"\nAcest acvariu este prea mic pentru a suporta viata"<<endl;
+    out<<"\nNumarul maxim de pesti vanduti de magazinul nostru conform politicii pentru protejarea si respectarea drepturilor animalelor pentru acvariul achizitionat de dumneavoastra este de: "<<ac.nrpesti;
+
+
+    out<<endl<<"Rating: "<<r;
+    out<<endl<<"Pret total: "<<(ac.prettotal+uof);
+
+
+
+    return out;
+}
+///overload operatorul ++ (pre-incrementare)
+const acvariu& acvariu::operator++()
+{
+    this->nrpesti++;
+    return *this;
+}
+///overload operatorul ++ (post-incrementare)
+const acvariu acvariu::operator++(int)
+{
+    acvariu aux(*this);
+    this->nrpesti++;
+    return aux;
+}
+///overload operatorul --
+const acvariu& acvariu::operator--(int)
+{
+    this->nrpesti--;
+    return *this;
+}
+
+
+
+///functionalitati
+int pretacv(acvariu ac)
+{
+    int pret=0;
+    if(strcmp("dreptunghi",strlwr(ac.getforma()))==0)
+        pret=(ac.getinaltime()*ac.getlatime()*ac.getlungime())/100+300;
+    if(strcmp("patrat",strlwr(ac.getforma()))==0)
+        pret=(ac.getinaltime()*ac.getlungime())/7+100;
+    if(strcmp("cerc",strlwr(ac.getforma()))==0)
+        pret=((ac.getraza()*ac.getraza()*3,14)*ac.getinaltime())/100+300;
+    return pret;
+
+}
+int sumadeachitat(acvariu ac)
+{
+    int s=0;
+    for(int i=0; i<ac.getnraccesorii(); i++)
+        s=s+*(ac.getpretaccesorii()+i);
+
+
+    return s;
+}
+double numarpestiperlitru(acvariu ac,double volum)
+{
+    ac.setlitri(volum/1000);
+    double tmp;
+    if(ac.getlitri()>0)
+    {
+        tmp=ac.getlitri();
+        tmp=floor(tmp/10);
+        return tmp;
+    }
+    return 0;
+}
+char calculareratingacvariu(acvariu ac)
+{
+    float s=0;
+    char f='a';
+    int n=ac.getnrrecenzii();
+
+    for(int i=0; i<n; i++)
+        s=s+*(ac.gettoaterecenziile()+i);
+
+    float r=s/n;
+    if(r<=2)
+    {
+        f='F';
+
+        return f;
+    }
+    else if((r>=1) && (r<=5))
+    {
+        f='D';
+
+        return f;
+    }
+    else if(s/n>5 && s/n<8)
+    {
+        f='C';
+
+        return f;
+    }
+    else if(s/n>6 and s/n<=8)
+    {
+        f='B';
+
+        return f;
+    }
+    else if(s/n>8 and s/n<=9)
+    {
+        f='A';
+
+        return f;
+    }
+    else if(s/n>9 and s/n<=10)
+    {
+        f='S';
+
+        return f;
+    }
+
+
+    return 0;
+}
+/// -----------------------------sfarsit acvariu------------------------------
+///exemplificarea conceptului de has a
+class ListaAcvarii
+{
+private:
+    bool isadmin;
+    acvariu* lac;
+    int nrac;
+public:
+    ///getter isadmin
+    bool getisadmin()
+    {
+        return isadmin;
+    }
+///setter isadmin
+    void setisadmin(bool b)
+    {
+        this->isadmin=b;
+    }
+    acvariu operator[] (int i)
+    {
+        if(0<=i && i<this->nrac)
+            return lac[i];
+        else
+            cout<<"NU EXISTA ACVARIUL";
+    }
+    int getnrac()
+    {
+        return this->nrac;
+    }
+    int TOTAL ()
+    {
+        int s=0;
+        for(int i=0; i<this->nrac; i++)
+        {
+            int pret=pretacv(this->lac[i]);
+            s=s+this->lac[i].getprettotal()+pret;
+        }
+        return s;
+
+    }
+    void sterge(int index);
+    friend ListaAcvarii operator+(ListaAcvarii listapr, const acvariu& ac);
+    friend istream& operator>>(istream& in,ListaAcvarii& l);
+    friend ostream& operator<<(ostream& out,const ListaAcvarii& l);
+
+    ListaAcvarii()
+    {
+        this->nrac=0;
+        this->lac=nullptr;
+    }
+    ListaAcvarii(int nrac,acvariu* lac)
+    {
+        this->nrac=nrac;
+        this->lac= new acvariu[nrac];
+        for(int i=0; i<this->nrac; i++)
+            this->lac[i]=lac[i];
+    }
+    ListaAcvarii(const ListaAcvarii& l)
+    {
+        this->nrac=l.nrac;
+        this->lac= new acvariu[l.nrac];
+        for(int i=0; i<l.nrac; i++)
+            this->lac[i]=l.lac[i];
+    }
+    ~ListaAcvarii()
+    {
+        if(this->lac!=NULL)
+            delete[] this->lac;
+    }
+    ListaAcvarii operator= (const ListaAcvarii&l)
+    {
+        if(this!=&l)
+        {
+            if(this->lac!=NULL)
+                delete[] this->lac;
+            this->nrac=l.nrac;
+            this->lac= new acvariu[l.nrac];
+            for(int i=0; i<l.nrac; i++)
+                this->lac[i]=l.lac[i];
+        }
+        return *this;
+    }
+
+};
+istream& operator>>(istream& in,ListaAcvarii& l)
+{
+    cout<<endl<<"Numarul de acvarii comandate: ";
+
+    in>>l.nrac;
+    if(l.nrac==1)
+    {
+        cout<<endl<<"Introduceti caracteristicile acvariului: ";
+        if(l.lac!=NULL)
+            delete[] l.lac;
+        l.lac=new acvariu[l.nrac];
+        if(l.isadmin==1)
+            l.lac[0].setisadmina(1);
+        else
+            l.lac[0].setisadmina(0);
+        in>>l.lac[0];
+    }
+    else
+    {
+        cout<<"Introduceti caracteristicile acvariilor: ";
+        if(l.lac!=NULL)
+            delete[] l.lac;
+        l.lac=new acvariu[l.nrac];
+        for(int i=0; i<l.nrac; i++)
+        {
+            if(l.isadmin==1)
+                l.lac[i].setisadmina(1);
+            else
+                l.lac[i].setisadmina(0);
+            in>>l.lac[i];
+        }
+    }
+    return in;
+}
+ostream& operator<<(ostream& out,const ListaAcvarii& l)
+{
+    out<<endl<<"Numarul de acvarii comandate: "<<l.nrac;
+    if(l.nrac==1)
+    {
+        out<<endl<<"Introduceti caracteristicile acvariului: "<<l.lac[0];
+    }
+    else
+    {
+        out<<endl<<"Introduceti caracteristicile acvariilor: ";
+        for(int i=0; i<l.nrac; i++)
+            out<<endl<<l.lac[i];
+    }
+    return out;
+}
+ListaAcvarii operator+ (ListaAcvarii l, const acvariu& ac)
+{
+    acvariu* listaux;
+    listaux=new acvariu[l.nrac];  ///aloc spatiu pentru listaux atat cat am in nrpod
+    for(int i=0; i<l.nrac; i++)
+        listaux[i]=l.lac[i];    ///copiez in listaux element cu element ce este in vectorul de decoratiuni alocat dinamic (tldr ii fac doar o copie)
+    if(l.lac!=NULL)
+        delete[] l.lac;
+    l.nrac++;                         ///fac loc pentru urmatorul element
+    l.lac=new acvariu[l.nrac];    ///creez spatiu in memorie pentru un vector cu un element mai lung
+    for(int i=0; i<l.nrac-1; i++) ///pun inapoi pana la penultimul element aceleasi valori
+        l.lac[i]=listaux[i];
+    l.lac[l.nrac-1]=ac;  ///pe pozitia incrementata mai sus adaug decoraiutinea
+    return l;
+}
+void ListaAcvarii::sterge(int index)
+{
+    acvariu* listaux;
+    listaux=new acvariu[--this->nrac];
+    for(int i=0; i<index-1; i++)
+        listaux[i]=this->lac[i];        ///teoretic pun in listaux elementele strict pana la index si strict dupa index
+
+    for(int i=index; i<(this->nrac)+1; i++)
+        listaux[i-1]=this->lac[i];
+
+    if(this->lac!=NULL)          ///sterg memoria
+        delete[] this->lac;
+
+    this->lac=new acvariu[this->nrac];                      ///realoc memoria xd
+
+
+    for(int i=0; i<(this->nrac); i++)
+        lac[i]=listaux[i];          ///copiez inapoi elementele mai putin cel de pe pozitia INDEX
+}
+///interfata
+class Detalii
+{
+public:
+    virtual void waterparam()=0;         ///daca pun virtual inseamna ca se duce in clasa
+    virtual void watertemp()=0;         ///25 degrees celcius
+    virtual void instock()=0;
+};
+class Parametrii:public Detalii
+{
+protected:
+    int temp;///25 grade celcius -ok
+    int ph;/// 6-8 -ok
+    int calciu;///~400ppm -ok
+    int nitrat; ///~30-40ppm -ok
+public:
+    friend istream& operator>>(istream& in,Parametrii& ppm );
+    friend ostream& operator<<(ostream& out,const Parametrii& ppm );
+    Parametrii()
+    {
+        this->temp=0;
+        this->ph=0;
+        this->calciu=0;
+        this->nitrat=0;
+    }
+    Parametrii(int temp, int ph,int calciu,int nitrat )
+    {
+        this->temp=temp;
+        this->ph=ph;
+        this->calciu=calciu;
+        this->nitrat=nitrat;
+    }
+    ~Parametrii()
+    {
+
+    }
+    Parametrii(const Parametrii& ppm)
+    {
+        this->temp=ppm.temp;
+        this->ph=ppm.ph;
+        this->calciu=ppm.calciu;
+        this->nitrat=ppm.nitrat;
+    }
+    Parametrii& operator= (const Parametrii& ppm)
+    {
+        if(this!=&ppm)
+        {
+            this->temp=ppm.temp;
+            this->ph=ppm.ph;
+            this->calciu=ppm.calciu;
+            this->nitrat=ppm.nitrat;
+        }
+        return *this;
+    }
+};
+istream& operator>>(istream& in,Parametrii& ppm )
+{
+    cout<<endl<<"Temperatura apei este: ";
+    in>>ppm.temp;
+    cout<<endl<<"Nivelul de calciu din apa este: ";
+    in>>ppm.calciu;
+    cout<<endl<<"Nivelul de ph din apa este: ";
+    in>>ppm.ph;
+    cout<<endl<<"Nivelul de nitrat din apa este: ";
+    in>>ppm.nitrat;
+    return in;
+}
+ostream& operator<<(ostream& out,const Parametrii& ppm )
+{
+    out<<endl<<"Temperatura apei este: "<<ppm.temp;
+    out<<endl<<"Nivelul de calciu din apa este: "<<ppm.calciu;
+    out<<endl<<"Nivelul de ph din apa este: "<<ppm.ph;
+    out<<endl<<"Nivelul de nitrat din apa este: "<<ppm.nitrat;
+    return out;
+}
+class Pesti:public Parametrii
+{
+protected:
+
+    int nrfreshspecies;
+    int nrsaltspecies;
+    string* speciess;
+    string* speciesf;
+    bool displaystockorbreed; ///1 for displaying whats for sale- 0 for displaying breeding tanks(not for sale atm)
+    int* stockofeachf;
+    int* breedofeachf;
+    int* stockofeachs;
+    int* breedofeachs;
+    vector<string> database;
+    string pestisor;
+public:
+    friend ostream& operator<<(ostream& out,const Pesti& fsh);///operator <<
+    friend istream& operator>>(istream& in,Pesti& fsh);///operator >>
+
+
+    vector<string> getdatabase()
+    {
+        return this->database;
+    }
+    void setdatabase(vector<string>db)
+    {
+        this->database=db;
+        for(int i=0; i<database.size(); i++)
+            cout<<database[i]<<" ";
+    }
+
+    void watertemp()
+    {
+        if(this->temp>=21 &&this->temp<=29)
+            cout<<endl<<"TEMPERATURA ESTE OK";
+        else
+            cout<<endl<<"NU INTRODUCETI PESTII IN ACVARIU";
+    }
+    void waterparam()
+    {
+        if(this->calciu<=400 && this->nitrat>30 && this->nitrat<40 && this->ph>=6 && this->ph<=8)
+            cout<<endl<<"CONDITIILE SUNT PERFECTE";
+        else
+            cout<<endl<<"ACVARIUL TREBUIE CICLAT";
+    }
+    void instock()
+    {
+        int ok=0;
+        cout<<endl<<"Pestele dorit: ";
+        cin>>this->pestisor;
+
+        for(string d: database)
+            if(d==this->pestisor)
+            {
+                cout<<endl<<"Pestele "<<this->pestisor<<" este inca in stoc";
+                ok=1;
+                break;
+            }
+        /*for(int i=0; i<this->nrfreshspecies; i++)
+        {
+
+            if(this->pestisor==(this->speciesf[i]))
+                if(this->stockofeachf[i]!=0)
+                {
+                    cout<<endl<<"Pestele "<<this->pestisor<<" este inca in stoc";
+                    ok=1;
+                    break;
+                }
+        }
+        for(int i=0; i<this->nrsaltspecies; i++)
+        {
+
+            if(this->pestisor==(this->speciess[i]))
+                if(this->stockofeachs[i]!=0)
+                {
+                    cout<<endl<<"Pestele "<<this->pestisor<<" este inca in stoc";
+                    ok=1;
+                    break;
+                }
+        }*/
+        if(ok==0)
+            cout<<endl<<"Pestele cautat nu mai este in stoc";
+
+    }
+    bool getdisplaystockorbreed()
+    {
+        return this->displaystockorbreed;
+    }
+    void setdisplaystockorbreed(bool flag)
+    {
+        this->displaystockorbreed=flag;
+    }
+///getter nrfreshspecies
+    int getnrfreshspecies()
+    {
+        return this->nrfreshspecies;
+    }
+    int getnrsaltspecies()
+    {
+        return this->nrsaltspecies;
+    }
+///getter speciess
+    string*getspeciess()
+    {
+        return this->speciess;
+    }
+///setter speciess
+    void setspeciess(string* speciess,int n)
+    {
+        this->nrsaltspecies=n;
+        if(this->speciess!=NULL)
+            delete[] this->speciess;
+        this->speciess=new string[n];
+        for(int i=0; i<n; i++)
+            this->speciess[i]=speciess[i];
+    }
+///getter speciesf
+    string*getspeciesf()
+    {
+        return this->speciesf;
+    }
+///setter speciess
+    void setspeciesf(string* speciesf,int n)
+    {
+        this->nrfreshspecies=n;
+        if(this->speciesf!=NULL)
+            delete[] this->speciesf;
+        this->speciesf=new string[n];
+        for(int i=0; i<n; i++)
+            this->speciesf[i]=speciesf[i];
+    }
+///getter stockofeachs
+    int* getstockofeachs()
+    {
+        return this->stockofeachs;
+    }
+///setter stockofeachs
+    void setstockofeachs(int* stockofeachs,int n)
+    {
+        this->nrsaltspecies=n;
+        if(this->stockofeachs!=NULL)
+            delete[] this->stockofeachs;
+        this->stockofeachs=new int[n];
+        for(int i=0; i<n; i++)
+            this->stockofeachs[i]=stockofeachs[i];
+
+
+    }
+    ///getter stockofeachf
+    int* getstockofeachf()
+    {
+        return this->stockofeachf;
+    }
+///setter stockofeachf
+    void setstockofeachf(int* stockofeachf,int n)
+    {
+        this->nrfreshspecies=n;
+        if(this->stockofeachf!=NULL)
+            delete[] this->stockofeachf;
+        this->stockofeachf=new int[n];
+        for(int i=0; i<n; i++)
+            this->stockofeachf[i]=stockofeachf[i];
+
+    }
+///getter breedofeachs
+    int* getbreedofeachs()
+    {
+        return this->breedofeachs;
+    }
+///setter breedofeachs
+    void setbreedofeachs(int* breedofeachs,int n)
+    {
+        this->nrsaltspecies=n;
+        if(this->breedofeachs!=NULL)
+            delete[] this->breedofeachs;
+        this->breedofeachs=new int[n];
+        for(int i=0; i<n; i++)
+            this->breedofeachs[i]=breedofeachs[i];
+
+    }
+///constructor fara param
+    Pesti():Parametrii()
+    {
+
+        this->nrfreshspecies=0;
+        this->nrsaltspecies=0;
+        this->speciess=NULL;
+        this->speciesf=NULL;
+        this->displaystockorbreed=false;
+        this->stockofeachf=NULL;
+        this->breedofeachf=NULL;
+        this->stockofeachs=NULL;
+        this->breedofeachs=NULL;
+        this->pestisor='/';
+    }
+///constructor cativa param
+    Pesti(int nrfreshspecies,int nrsaltspecies)
+    {
+
+        this->nrfreshspecies=nrfreshspecies;
+        this->nrsaltspecies=nrsaltspecies;
+        this->speciess=NULL;
+        this->speciesf=NULL;
+        this->displaystockorbreed=false;
+        this->stockofeachf=NULL;
+        this->breedofeachf=NULL;
+        this->stockofeachs=NULL;
+        this->breedofeachs=NULL;
+
+
+    }
+///constructor toti param
+    Pesti(int nrfreshspecies,int nrsaltspecies,string* speciess,string* speciesf,bool displaystockorbreed,int* stockofeachf,int* breedofeachf,int* stockofeachs,int* breedofeachs,string pestisor,int temp,int ph,int calciu,int nitrat):Parametrii(temp,ph,calciu,nitrat)
+    {
+        this->pestisor=pestisor;
+        this->nrfreshspecies=nrfreshspecies;
+        this->nrsaltspecies=nrsaltspecies;
+        this->displaystockorbreed=displaystockorbreed;
+
+        this->speciess=new string[this->nrsaltspecies];
+        for(int i=0; i<this->nrsaltspecies; i++)
+            this->speciess[i]=speciess[i];
+
+
+        this->speciesf=new string[this->nrfreshspecies];
+        for(int i=0; i<this->nrfreshspecies; i++)
+            this->speciesf[i]=speciesf[i];
+
+        this->stockofeachf=new int[this->nrfreshspecies];
+        for(int i=0; i<this->nrfreshspecies; i++)
+            this->stockofeachf[i]=stockofeachf[i];
+
+        this->breedofeachf=new int[this->nrfreshspecies];
+        for(int i=0; i<this->nrfreshspecies; i++)
+            this->breedofeachf[i]=breedofeachf[i];
+
+        this->stockofeachs=new int[this->nrsaltspecies];
+        for(int i=0; i<this->nrsaltspecies; i++)
+            this->stockofeachs[i]=stockofeachs[i];
+
+        this->breedofeachs=new int[this->nrsaltspecies];
+        for(int i=0; i<this->nrsaltspecies; i++)
+            this->breedofeachs[i]=breedofeachs[i];
+
+
+    }
+    Pesti(const Pesti& fsh):Parametrii(fsh)
+    {
+        this->pestisor=fsh.pestisor;
+        this->nrfreshspecies=fsh.nrfreshspecies;
+        this->nrsaltspecies=fsh.nrsaltspecies;
+        this->displaystockorbreed=fsh.displaystockorbreed;
+
+
+        this->speciess=new string[fsh.nrsaltspecies];
+        for(int i=0; i<this->nrsaltspecies; i++)
+            this->speciess[i]=fsh.speciess[i];
+
+
+        this->speciesf=new string[fsh.nrfreshspecies];
+        for(int i=0; i<this->nrfreshspecies; i++)
+            this->speciesf[i]=fsh.speciesf[i];
+
+        this->stockofeachf=new int[fsh.nrfreshspecies];
+        for(int i=0; i<this->nrfreshspecies; i++)
+            this->stockofeachf[i]=fsh.stockofeachf[i];
+
+        this->breedofeachf=new int[fsh.nrfreshspecies];
+        for(int i=0; i<this->nrfreshspecies; i++)
+            this->breedofeachf[i]=fsh.breedofeachf[i];
+
+        this->stockofeachs=new int[fsh.nrsaltspecies];
+        for(int i=0; i<this->nrsaltspecies; i++)
+            this->stockofeachs[i]=fsh.stockofeachs[i];
+
+        this->breedofeachs=new int[this->nrsaltspecies];
+        for(int i=0; i<this->nrsaltspecies; i++)
+            this->breedofeachs[i]=fsh.breedofeachs[i];
+    }
+///destructor
+    virtual  ~Pesti()
+    {
+        if(this->stockofeachs!=NULL)
+            delete[] this->stockofeachs;
+
+        if(this->breedofeachs!=NULL)
+            delete[] this->breedofeachs;
+
+        if(this->stockofeachf!=NULL)
+            delete[] this->stockofeachf;
+
+        if(this->breedofeachf!=NULL)
+            delete[] this->breedofeachf;
+
+        if(this->speciesf!=NULL)
+            delete[] this->speciesf;
+        if(this->speciess!=NULL)
+            delete[] this->speciess;
+    }
+///op =
+    Pesti& operator=(const Pesti& pst)
+    {
+        if(this!=&pst)
+        {
+            Parametrii::operator=(pst);
+
+            if(this->stockofeachs!=NULL)
+                delete[] this->stockofeachs;
+
+            if(this->stockofeachs!=NULL)
+                delete[] this->breedofeachs;
+
+            if(this->stockofeachf!=NULL)
+                delete[] this->stockofeachf;
+
+            if(this->stockofeachf!=NULL)
+                delete[] this->breedofeachf;
+
+            if(this->speciesf!=NULL)
+                delete[] this->speciesf;
+            if(this->speciess!=NULL)
+                delete[] this->speciess;
+
+
+            this->pestisor=pst.pestisor;
+            this->nrfreshspecies=pst.nrfreshspecies;
+            this->displaystockorbreed=pst.displaystockorbreed;
+            this->nrsaltspecies=pst.nrsaltspecies;
+
+            this->speciess=new string[this->nrsaltspecies];
+            for(int i=0; i<this->nrsaltspecies; i++)
+                this->speciess[i]=pst.speciess[i];
+
+
+            this->speciesf=new string[this->nrfreshspecies];
+            for(int i=0; i<this->nrfreshspecies; i++)
+                this->speciesf[i]=pst.speciesf[i];
+
+            this->stockofeachf=new int[this->nrfreshspecies];
+            for(int i=0; i<this->nrfreshspecies; i++)
+                this->stockofeachf[i]=pst.stockofeachf[i];
+
+            this->breedofeachf=new int[this->nrfreshspecies];
+            for(int i=0; i<this->nrfreshspecies; i++)
+                this->breedofeachf[i]=pst.breedofeachf[i];
+
+            this->stockofeachs=new int[this->nrsaltspecies];
+            for(int i=0; i<this->nrsaltspecies; i++)
+                this->stockofeachs[i]=pst.stockofeachs[i];
+
+            this->breedofeachs=new int[this->nrsaltspecies];
+            for(int i=0; i<this->nrsaltspecies; i++)
+                this->breedofeachs[i]=pst.breedofeachs[i];
+        }
+        return *this;
+    }
+///op ==
+    bool operator==(const Pesti&fsh)
+    {
+        if(fsh.nrfreshspecies==fsh.nrsaltspecies)
+            return true;
+        return false;
+    }
+///op <
+    bool operator< (const Pesti&fsh)
+    {
+        if(fsh.nrfreshspecies<fsh.nrsaltspecies)
+            return true;
+        return false;
+    }
+///op cast explicit
+    explicit operator float()
+    {
+
+        return (float)this->nrfreshspecies;
+
+    }
+    ///op []
+    string operator[] (int i) ///functionalitate peste favorit care iese repede de pe stoc (verificarea existentei lui)
+    {
+        if(0<=i && i<this->nrsaltspecies)
+            return speciess[i];
+        else
+            cout<<"PESTELE CAUTAT NU MAI ESTE DISPONIBIL MOMENTAN";
+    }
+};
+
+///op >>
+
+
+istream& operator>>(istream& in,  Pesti& fsh)
+{
+    in>>(Parametrii&)fsh;
+    cout<<endl<<"Numar specii de pesti(apa dulce): ";
+    in>>fsh.nrfreshspecies;
+    cout<<endl<<"Numar specii de pesti(apa sarata): ";
+    in>>fsh.nrsaltspecies;
+    cout<<"Doriti sa vizulizati pestii de vanzare sau cei ce urmeaza a fi pusi pe stoc?(1-vanzare/0-in curand) ";
+    in>>fsh.displaystockorbreed;
+    if(fsh.displaystockorbreed==true)
+    {
+        if(fsh.nrfreshspecies!=0)
+        {
+            cout<<endl<<"Specii apa dulce: ";
+            if(fsh.speciesf!=NULL)
+                delete[] fsh.speciesf;
+            fsh.speciesf=new string[fsh.nrfreshspecies];
+            for(int i=0; i<fsh.nrfreshspecies; i++)
+                in>>fsh.speciesf[i];
+            if(fsh.stockofeachf!=NULL)
+                delete[] fsh.stockofeachf;
+            fsh.stockofeachf=new int[fsh.nrfreshspecies];
+            for(int i=0; i<fsh.nrfreshspecies; i++)
+            {
+
+                cout<<endl<<"Numarul de exemplare de "<<fsh.speciesf[i]<<" de vanzare ";
+                in>>fsh.stockofeachf[i];
+            }
+        } //<---
+
+        if(fsh.nrsaltspecies!=0)
+        {
+            cout<<endl<<"Specii apa sarata: ";
+            if(fsh.speciess!=NULL)
+                delete[] fsh.speciess;
+            fsh.speciess=new string[fsh.nrsaltspecies];
+            for(int i=0; i<fsh.nrsaltspecies; i++)
+                in>>fsh.speciess[i];
+
+            if(fsh.stockofeachs!=NULL)
+                delete[] fsh.stockofeachs;
+            fsh.stockofeachs=new int[fsh.nrsaltspecies];
+            for(int i=0; i<fsh.nrsaltspecies; i++)
+            {
+
+                cout<<endl<<"Numarul de exemplare de "<<fsh.speciess[i]<<" de vanzare ";
+                in>>fsh.stockofeachs[i];
+            }
+        }
+
+    }
+    else
+    {
+        if(fsh.nrfreshspecies!=0)
+        {
+            cout<<"Specii apa dulce: ";
+            if(fsh.speciesf!=NULL)
+                delete[] fsh.speciesf;
+            fsh.speciesf=new string[fsh.nrfreshspecies];
+
+            for(int i=0; i<fsh.nrfreshspecies; i++)
+                in>>fsh.speciesf[i];
+            if(fsh.breedofeachf!=NULL)
+                delete[] fsh.breedofeachf;
+            fsh.breedofeachf=new int[fsh.nrfreshspecies];
+            for(int i=0; i<fsh.nrfreshspecies; i++)
+            {
+
+                cout<<endl<<"Numarul de exemplare de "<<fsh.speciesf[i]<<" valabile in curand ";
+                in>>fsh.breedofeachf[i];
+            }
+        }
+
+        if(fsh.nrsaltspecies!=0)
+        {
+            cout<<endl<<"Specii apa sarata: ";
+            if(fsh.speciess!=NULL)
+                delete[] fsh.speciess;
+            fsh.speciess=new string[fsh.nrsaltspecies];
+            for(int i=0; i<fsh.nrsaltspecies; i++)
+                in>>fsh.speciess[i];
+
+            if(fsh.breedofeachs!=NULL)
+                delete[] fsh.breedofeachs;
+            fsh.breedofeachs=new int[fsh.nrsaltspecies];
+            for(int i=0; i<fsh.nrsaltspecies; i++)
+            {
+
+                cout<<endl<<"Numarul de exemplare de "<<fsh.speciess[i]<<" valabile in curand ";
+                in>>fsh.breedofeachs[i];
+            }
+        }
+    }
+    return in;
+
+
+
+}
+///op<<
+ostream& operator<<(ostream& out, const Pesti& fsh)
+{
+    out<<(Parametrii&)fsh;
+    out<<endl;
+    out<<endl<<"Numar specii de pesti(apa dulce): "<<fsh.nrfreshspecies;
+    out<<endl<<"Numar specii de pesti(apa sarata): "<<fsh.nrsaltspecies;
+    if(fsh.displaystockorbreed==true)
+    {
+        out<<endl<<"Utilizatorul a ales sa vizulizeze stocul de vanzare ---> ";
+        if(fsh.nrfreshspecies!=0)
+        {
+            out<<endl<<"Apa DULCE ";
+            for(int i=0; i<fsh.nrfreshspecies; i++)
+                out<<endl<<"Sunt pe stoc "<<fsh.stockofeachf[i]<<" "<<fsh.speciesf[i];
+        }
+        if(fsh.nrsaltspecies!=0)
+        {
+            out<<endl<<"Apa SARATA ";
+            for(int i=0; i<fsh.nrsaltspecies; i++)
+                out<<endl<<"Sunt pe stoc "<<fsh.stockofeachs[i]<<" "<<fsh.speciess[i];
+        }
+    }
+    else
+    {
+        out<<endl<<"Utilizatorul a ales sa vizulizeze nevertebratele disponibile in curand de vanzare ---> ";
+        if(fsh.nrfreshspecies!=0)
+        {
+            out<<endl<<"Apa DULCE ";
+            for(int i=0; i<fsh.nrfreshspecies; i++)
+                out<<endl<<"Sunt pe stoc "<<fsh.breedofeachf[i]<<" "<<fsh.speciesf[i];
+        }
+        if(fsh.nrsaltspecies!=0)
+        {
+            out<<endl<<"Apa SARATA ";
+            for(int i=0; i<fsh.nrsaltspecies; i++)
+                out<<endl<<"Sunt pe stoc "<<fsh.breedofeachs[i]<<" "<<fsh.speciess[i];
+        }
+
+    }
+
+    return out;
+}
+///functionalitate pesti
+void checkfish(Pesti fsh,int i)
+{
+    fsh[i];
+    if(fsh.getdisplaystockorbreed())
+    {
+        if(*(fsh.getstockofeachs()+i))
+            cout<<"Pestele "<<fsh[i]<<" este inca disponibil in magazin";
+        else
+            cout<<"Pestele "<<fsh[i]<<" NU este disponibil momentan";
+    }
+    else
+    {
+        if(*(fsh.getbreedofeachs()+i))
+            cout<<"Pestele "<<fsh[i]<<" va fi disponibil in curand";
+        else
+            cout<<"Pestele "<<fsh[i]<<" NU se mai gaseste";
+    }
+
+}
+///---------------------------------------------------------------------------------------
+class Plante
+{
+private:
+
+    int nrplante;
+    int nrcorali;
+    string plantutza;
+    string* speciiplante;
+    string* speciicorali;
+    bool displaystockorbreed; ///1 for displaying whats for sale- 0 for displaying breeding tanks(not for sale atm)
+    int* stockofeachp;
+    int* breedofeachp;
+    int* stockofeachc;
+    int* breedofeachc;
+public:
+    friend ostream& operator<<(ostream& out,const Plante& plnt);///operator <<
+    friend istream& operator>>(istream& in,Plante& plnt);///operator >>
+    void plantinstock()
+    {
+        int ok=0;
+        cout<<endl<<"Planta dorita: ";
+        cin>>this->plantutza;
+        for(int i=0; i<this->nrplante; i++)
+        {
+
+            if(this->plantutza==(this->speciiplante[i]))
+                if(this->stockofeachp[i]!=0)
+                {
+                    cout<<endl<<"Planta "<<this->plantutza<<" este inca in stoc";
+                    ok=1;
+                    break;
+                }
+        }
+        for(int i=0; i<this->nrcorali; i++)
+        {
+
+            if(this->plantutza==(this->speciicorali[i]))
+                if(this->stockofeachc[i]!=0)
+                {
+                    cout<<endl<<"Coralul "<<this->plantutza<<" este inca in stoc";
+                    ok=1;
+                    break;
+                }
+        }
+        if(ok==0)
+            cout<<endl<<"Planta cautata nu mai este in stoc";
+
+    }
+    string* getspeciiplante()
+    {
+        return this->speciiplante;
+    }
+    string* getspeciicorali()
+    {
+        return this->speciicorali;
+    }
+    int getnrplante()
+    {
+        return this->nrplante;
+    }
+    int getnrcorali()
+    {
+        return this->nrcorali;
+    }
+    int* getbreedofeachp()
+    {
+        return this->breedofeachp;
+    }
+    void setbreedofheap(int*breedofeachp,int n)
+    {
+        this->nrplante=n;
+        if(this->breedofeachp!=NULL)
+            delete[] this->breedofeachp;
+        this->breedofeachp=new int[n];
+        for(int i=0; i<n; i++)
+            this->breedofeachp[i]=breedofeachp[i];
+    }
+    bool getdisplaystockorbreed()
+    {
+        return this->displaystockorbreed;
+    }
+    void setdisplaystockorbreed(bool flag)
+    {
+        this->displaystockorbreed=flag;
+    }
+    int* getstockofeachp()
+    {
+        return this->stockofeachp;
+    }
+    int* getstockofeachc()
+    {
+        return this->stockofeachc;
+    }
+    void setstockofeachp(int*stockofeachp,int n)
+    {
+        this->nrplante=n;
+        if(this->stockofeachp!=NULL)
+            delete[] this->stockofeachp;
+        this->stockofeachp=new int[n];
+        for(int i=0; i<n; i++)
+            this->stockofeachp[i]=stockofeachp[i];
+    }
+///constructor fara param
+    Plante()
+    {
+
+        this->nrplante=0;
+        this->nrcorali=0;
+        this->speciicorali=NULL;
+        this->speciiplante=NULL;
+        this->displaystockorbreed=false;
+        this->stockofeachp=NULL;
+        this->breedofeachp=NULL;
+        this->stockofeachc=NULL;
+        this->breedofeachc=NULL;
+    }
+///constructor cativa param
+    Plante(int nrplante,int nrcorali)
+    {
+
+        this->nrplante=nrplante;
+        this->nrcorali=nrcorali;
+        this->speciicorali=NULL;
+        this->speciiplante=NULL;
+        this->displaystockorbreed=false;
+        this->stockofeachp=NULL;
+        this->breedofeachp=NULL;
+        this->stockofeachc=NULL;
+        this->breedofeachc=NULL;
+
+
+    }
+///constructor toti param
+    Plante(int nrplante,int nrcorali,string* speciicorali,string* speciiplante,bool displaystockorbreed,int* stockofeachp,int* breedofeachp,int* stockofeachc,int* breedofeachc)
+    {
+
+        this->nrplante=nrplante;
+        this->nrcorali=nrcorali;
+        this->displaystockorbreed=displaystockorbreed;
+
+        this->speciicorali=new string[this->nrcorali];
+        for(int i=0; i<this->nrcorali; i++)
+            this->speciicorali[i]=speciicorali[i];
+
+
+        this->speciiplante=new string[this->nrplante];
+        for(int i=0; i<this->nrplante; i++)
+            this->speciiplante[i]=speciiplante[i];
+
+        this->stockofeachp=new int[this->nrplante];
+        for(int i=0; i<this->nrplante; i++)
+            this->stockofeachp[i]=stockofeachp[i];
+
+        this->breedofeachp=new int[this->nrplante];
+        for(int i=0; i<this->nrplante; i++)
+            this->breedofeachp[i]=breedofeachp[i];
+
+        this->stockofeachc=new int[this->nrcorali];
+        for(int i=0; i<this->nrcorali; i++)
+            this->stockofeachc[i]=stockofeachc[i];
+
+        this->breedofeachc=new int[this->nrcorali];
+        for(int i=0; i<this->nrcorali; i++)
+            this->breedofeachc[i]=breedofeachc[i];
+
+
+    }
+    Plante(const Plante &plnt)
+    {
+
+        this->nrplante=plnt.nrplante;
+        this->nrcorali=plnt.nrcorali;
+        this->displaystockorbreed=plnt.displaystockorbreed;
+
+
+        this->speciicorali=new string[this->nrcorali];
+        for(int i=0; i<this->nrcorali; i++)
+            this->speciicorali[i]=plnt.speciicorali[i];
+
+
+        this->speciiplante=new string[this->nrplante];
+        for(int i=0; i<this->nrplante; i++)
+            this->speciiplante[i]=plnt.speciiplante[i];
+
+        this->stockofeachp=new int[this->nrplante];
+        for(int i=0; i<this->nrplante; i++)
+            this->stockofeachp[i]=plnt.stockofeachp[i];
+
+        this->breedofeachp=new int[this->nrplante];
+        for(int i=0; i<this->nrplante; i++)
+            this->breedofeachp[i]=plnt.breedofeachp[i];
+
+        this->stockofeachc=new int[this->nrcorali];
+        for(int i=0; i<this->nrcorali; i++)
+            this->stockofeachc[i]=plnt.stockofeachc[i];
+
+        this->breedofeachc=new int[this->nrcorali];
+        for(int i=0; i<this->nrcorali; i++)
+            this->breedofeachc[i]=plnt.breedofeachc[i];
+    }
+///destructor
+    ~Plante()
+    {
+        if(this->stockofeachc!=NULL)
+            delete[] this->stockofeachc;
+
+        if(this->breedofeachc!=NULL)
+            delete[] this->breedofeachc;
+
+        if(this->stockofeachp!=NULL)
+            delete[] this->stockofeachp;
+
+        if(this->breedofeachp!=NULL)
+            delete[] this->breedofeachp;
+
+        if(this->speciiplante!=NULL)
+            delete[] this->speciiplante;
+        if(this->speciicorali!=NULL)
+            delete[] this->speciicorali;
+    }
+///op =
+    Plante& operator=(const Plante& crl)
+    {
+        if(this!=&crl)
+        {
+
+            if(this->stockofeachc!=NULL)
+                delete[] this->stockofeachc;
+
+            if(this->stockofeachc!=NULL)
+                delete[] this->breedofeachc;
+
+            if(this->stockofeachp!=NULL)
+                delete[] this->stockofeachp;
+
+            if(this->stockofeachp!=NULL)
+                delete[] this->breedofeachp;
+
+            if(this->speciiplante!=NULL)
+                delete[] this->speciiplante;
+            if(this->speciicorali!=NULL)
+                delete[] this->speciicorali;
+
+
+
+            this->nrplante=crl.nrplante;
+            this->displaystockorbreed=crl.displaystockorbreed;
+            this->nrcorali=crl.nrcorali;
+
+            this->speciicorali=new string[this->nrcorali];
+            for(int i=0; i<this->nrcorali; i++)
+                this->speciicorali[i]=crl.speciicorali[i];
+
+
+            this->speciiplante=new string[this->nrplante];
+            for(int i=0; i<this->nrplante; i++)
+                this->speciiplante[i]=crl.speciiplante[i];
+
+            this->stockofeachp=new int[this->nrplante];
+            for(int i=0; i<this->nrplante; i++)
+                this->stockofeachp[i]=crl.stockofeachp[i];
+
+            this->breedofeachp=new int[this->nrplante];
+            for(int i=0; i<this->nrplante; i++)
+                this->breedofeachp[i]=crl.breedofeachp[i];
+
+            this->stockofeachc=new int[this->nrcorali];
+            for(int i=0; i<this->nrcorali; i++)
+                this->stockofeachc[i]=crl.stockofeachc[i];
+
+            this->breedofeachc=new int[this->nrcorali];
+            for(int i=0; i<this->nrcorali; i++)
+                this->breedofeachc[i]=crl.breedofeachc[i];
+        }
+        return *this;
+    }
+    ///op []
+    string operator[] (int i)
+    {
+        if(0<=i && i<this->nrplante)
+            return speciiplante[i];
+        else
+            cout<<"PLANTA CAUTATA NU MAI ESTE DISPONIBILA MOMENTAN";
+    }
+
+};
+
+///op >>
+
+
+istream& operator>>(istream& in,  Plante& plnt)
+{
+    cout<<endl<<"Numar specii de plante: ";
+    in>>plnt.nrplante;
+    cout<<endl<<"Numar specii de corali: ";
+    in>>plnt.nrcorali;
+    cout<<"Doriti sa vizulizati plantele/coralii de vanzare sau cele ce urmeaza a fi puse pe stoc?(1-vanzare/0-in curand) ";
+    in>>plnt.displaystockorbreed;
+    if(plnt.displaystockorbreed==true)
+    {   if(plnt.nrplante)
+        {
+        cout<<endl<<"Specii plante: ";
+        if(plnt.speciiplante!=NULL)
+            delete[] plnt.speciiplante;
+        plnt.speciiplante=new string[plnt.nrplante];
+        for(int i=0; i<plnt.nrplante; i++)
+            getline(in>>ws,plnt.speciiplante[i]);
+        if(plnt.stockofeachp!=NULL)
+            delete[] plnt.stockofeachp;
+        plnt.stockofeachp=new int[plnt.nrplante];
+        for(int i=0; i<plnt.nrplante; i++)
+        {
+
+            cout<<endl<<"Numarul de exemplare de "<<plnt.speciiplante[i]<<" de vanzare ";
+            in>>plnt.stockofeachp[i];
+        }}
+
+if(plnt.nrcorali)
+        {
+        cout<<endl<<"Specii corali: ";
+        if(plnt.speciicorali!=NULL)
+            delete[] plnt.speciicorali;
+        plnt.speciicorali=new string[plnt.nrcorali];
+        for(int i=0; i<plnt.nrcorali; i++)
+            getline(in>>ws,plnt.speciicorali[i]);
+
+        if(plnt.stockofeachc!=NULL)
+            delete[] plnt.stockofeachc;
+        plnt.stockofeachc=new int[plnt.nrcorali];
+        for(int i=0; i<plnt.nrcorali; i++)
+        {
+
+            cout<<endl<<"Numarul de exemplare de "<<plnt.speciicorali[i]<<" de vanzare ";
+            in>>plnt.stockofeachc[i];
+        }}
+
+    }
+    else
+    {  if(plnt.nrplante)
+        {cout<<"Specii plante: ";
+        if(plnt.speciiplante!=NULL)
+            delete[] plnt.speciiplante;
+        plnt.speciiplante=new string[plnt.nrplante];
+
+        for(int i=0; i<plnt.nrplante; i++)
+            in>>plnt.speciiplante[i];
+        if(plnt.breedofeachp!=NULL)
+            delete[] plnt.breedofeachp;
+        plnt.breedofeachp=new int[plnt.nrplante];
+        for(int i=0; i<plnt.nrplante; i++)
+        {
+
+            cout<<endl<<"Numarul de exemplare de "<<plnt.speciiplante[i]<<" valabile in curand ";
+            in>>plnt.breedofeachp[i];
+        }}
+
+    if(plnt.nrcorali)
+        {cout<<endl<<"Specii corali: ";
+        if(plnt.speciicorali!=NULL)
+            delete[] plnt.speciicorali;
+        plnt.speciicorali=new string[plnt.nrcorali];
+        for(int i=0; i<plnt.nrcorali; i++)
+            in>>plnt.speciicorali[i];
+
+        if(plnt.breedofeachc!=NULL)
+            delete[] plnt.breedofeachc;
+        plnt.breedofeachc=new int[plnt.nrcorali];
+        for(int i=0; i<plnt.nrcorali; i++)
+        {
+
+            cout<<endl<<"Numarul de exemplare de "<<plnt.speciicorali[i]<<" valabile in curand ";
+            in>>plnt.breedofeachc[i];
+        }}
+    }
+    return in;
+
+
+
+}
+///op<<
+ostream& operator<<(ostream& out, const Plante& plnt)
+{
+    out<<endl;
+    out<<endl<<"Numar specii de plante: "<<plnt.nrplante;
+    out<<endl<<"Numar specii de corali: "<<plnt.nrcorali;
+    if(plnt.displaystockorbreed==true)
+    {
+        out<<endl<<"Utilizatorul a ales sa vizulizeze stocul de vanzare ---> ";
+        out<<endl<<"PLANTE ";
+        for(int i=0; i<plnt.nrplante; i++)
+            out<<endl<<"Sunt pe stoc "<<plnt.stockofeachp[i]<<" "<<plnt.speciiplante[i];
+        out<<endl<<"CORALI ";
+        for(int i=0; i<plnt.nrcorali; i++)
+            out<<endl<<"Sunt pe stoc "<<plnt.stockofeachc[i]<<" "<<plnt.speciicorali[i];
+    }
+    else
+    {
+        out<<endl<<"Utilizatorul a ales sa vizulizeze nevertebratele disponibile in curand de vanzare ---> ";
+        out<<endl<<"PLANTE";
+        for(int i=0; i<plnt.nrplante; i++)
+            out<<endl<<"Sunt pe stoc "<<plnt.breedofeachp[i]<<" "<<plnt.speciiplante[i];
+        out<<endl<<"CORALI ";
+        for(int i=0; i<plnt.nrcorali; i++)
+            out<<endl<<"Sunt pe stoc "<<plnt.breedofeachc[i]<<" "<<plnt.speciicorali[i];
+    }
+
+    return out;
+}
+///functionalitate plante
+void checkplant(Plante plnt,int i)
+{
+    plnt[i];
+    if(plnt.getdisplaystockorbreed())
+    {
+        if(*(plnt.getstockofeachp()+i)!=0)
+            cout<<"Planta "<<plnt[i]<<" este inca disponibila in magazin";
+        else cout<<"Planta "<<plnt[i]<<" NU este disponibila momentan";
+    }
+    else
+    {
+        if(*(plnt.getbreedofeachp()+i)!=0)
+            cout<<"Planta "<<plnt[i]<<" este in reproducere";
+        else cout<<"Planta "<<plnt[i]<<" NU este disponibila momentan";
+    }
+}
+///----------------------------------------------------------------------------------------------------------------------------
+class Decoratiuni
+{
+protected:
+
+    int nrsubstraturi;
+    int* fertilitate;
+    string* substrat;
+    float* pretsubstrat;
+    acvariu ac;
+    //bool utilizare_substrat;
+public:
+    friend ostream& operator<<(ostream& out,const Decoratiuni& dec);///operator <<
+    friend istream& operator>>(istream& in,Decoratiuni& dec);///operator >>
+int getnrsub()
+{
+    return this->nrsubstraturi;
+}
+string* getsubstrat()
+{
+    return this->substrat;
+}
+int* getboolfert()
+{
+    return this->fertilitate;
+}
+///empty conts
+    Decoratiuni()
+    {
+        this->nrsubstraturi=0;
+        this->substrat=NULL;
+        this->pretsubstrat=NULL;
+        this->fertilitate=NULL;
+    }
+///const mic
+    Decoratiuni(string* substrat, int nrsubstraturi)
+    {
+        this->nrsubstraturi=nrsubstraturi;
+        this->substrat=new string[nrsubstraturi];
+        for(int i=0; i<this->nrsubstraturi; i++)
+            this->substrat[i]=substrat[i];
+        this->pretsubstrat=NULL;
+        this->fertilitate=NULL;
+    }
+///const
+    Decoratiuni(int nrsubstraturi,string* substrat,float* pretsubstrat,int* fertilitate)
+    {
+        this->nrsubstraturi=nrsubstraturi;
+
+        this->substrat=new string[nrsubstraturi];
+        for(int i=0; i<nrsubstraturi; i++)
+            this->substrat[i]=substrat[i];
+        this->pretsubstrat=new float[nrsubstraturi];
+        for(int i=0; i<nrsubstraturi; i++)
+            this->pretsubstrat[i]=pretsubstrat[i];
+        this->fertilitate=new int[nrsubstraturi];
+        for(int i=0; i<nrsubstraturi; i++)
+            this->fertilitate[i]=fertilitate[i];
+    }
+///cc
+    Decoratiuni(const Decoratiuni& dec)
+    {
+        this->nrsubstraturi=dec.nrsubstraturi;
+
+        this->substrat=new string[dec.nrsubstraturi];
+        for(int i=0; i<dec.nrsubstraturi; i++)
+            this->substrat[i]=dec.substrat[i];
+        this->pretsubstrat=new float[dec.nrsubstraturi];
+        for(int i=0; i<dec.nrsubstraturi; i++)
+            this->pretsubstrat[i]=dec.pretsubstrat[i];
+        this->fertilitate=new int[dec.nrsubstraturi];
+        for(int i=0; i<dec.nrsubstraturi; i++)
+            this->fertilitate[i]=dec.fertilitate[i];
+    }
+///dest
+    ~Decoratiuni()
+    {
+        if(this->pretsubstrat!=NULL)
+            delete[] this->pretsubstrat;
+        if(this->substrat!=NULL)
+            delete[] this->substrat;
+        if(this->fertilitate!=NULL)
+            delete[] this->fertilitate;
+    }
+///=
+    Decoratiuni& operator=( const Decoratiuni& dec)
+    {
+        if(this!=&dec)
+        {
+            if(this->pretsubstrat!=NULL)
+                delete[] this->pretsubstrat;
+            if(this->substrat!=NULL)
+                delete[] this->substrat;
+            if(this->fertilitate!=NULL)
+                delete[] this->fertilitate;
+
+            this->nrsubstraturi=dec.nrsubstraturi;
+            this->fertilitate=new int[dec.nrsubstraturi];
+            for(int i=0; i<this->nrsubstraturi; i++)
+                this->fertilitate[i]=dec.fertilitate[i];
+            this->substrat=new string[dec.nrsubstraturi];
+            for(int i=0; i<dec.nrsubstraturi; i++)
+                this->substrat[i]=dec.substrat[i];
+            this->pretsubstrat=new float[dec.nrsubstraturi];
+            for(int i=0; i<this->nrsubstraturi; i++)
+                this->pretsubstrat[i]=dec.pretsubstrat[i];
+
+        }
+        return *this;
+    }
+
+};
+istream& operator>>(istream& in,  Decoratiuni& dec)
+{
+    cout<<endl<<"Numar substraturi: ";
+    in>>dec.nrsubstraturi;
+    cout<<endl<<"Tipuri de substraturi: ";
+    if(dec.substrat!=NULL)
+        delete[] dec.substrat;
+    dec.substrat=new string[dec.nrsubstraturi];
+    for(int i=0; i<dec.nrsubstraturi; i++)
+        getline(in>>ws,dec.substrat[i]);
+    if(dec.fertilitate!=NULL)
+        delete[] dec.fertilitate;
+    dec.fertilitate=new int[dec.nrsubstraturi];
+    for(int i=0; i<dec.nrsubstraturi; i++)
+    {
+        cout<<endl<<"Substratul "<<dec.substrat[i]<<" este fertil [0-NU/1-DA] ";
+        in>>dec.fertilitate[i];
+    }
+
+    if(dec.pretsubstrat!=NULL)
+        delete[] dec.pretsubstrat;
+    dec.pretsubstrat=new float[dec.nrsubstraturi];
+    for(int i=0; i<dec.nrsubstraturi; i++)
+    {
+        cout<<endl<<"Pretul substratului "<<dec.substrat[i]<<" este de ";
+        in>>dec.pretsubstrat[i];
+    }
+    return in;
+}
+///<<
+ostream& operator<<(ostream& out, const Decoratiuni& dec)
+{
+    out<<endl<<"Numarul dorit de substraturi: "<<dec.nrsubstraturi;
+    out<<endl<<"Substraturile sunt: ";
+    for(int i=0; i<dec.nrsubstraturi; i++)
+    {
+
+        if(dec.fertilitate[i]==1)
+            out<<endl<<dec.substrat[i]<<" valoreaza "<<dec.pretsubstrat[i]<<" si este fertil";
+        else
+            out<<endl<<dec.substrat[i]<<" valoreaza "<<dec.pretsubstrat[i]<<" si NU este fertil";
+    }
+    acvariu ac;
+    //kilograme(ac);
+    //  acvariu ac;
+    /// de revenit maine cu inherit
+//    out<<endl<<"va fi nevoie de minimum "<<k<<" kilograme";
+
+
+    return out;
+}
+///functionalitate decor
+void kilograme( acvariu ac)
+{
+    float sup=1;
+    if(strcmp("patrat",ac.getforma())==0)
+    {
+
+        float l=ac.getlungime();
+        sup=l*l*5;
+    }
+    if(strcmp("cerc",ac.getforma())==0)
+    {
+
+        float r=ac.getraza();
+        sup=r*r*3.14*5;
+    }
+    if(strcmp("dreptunghi",ac.getforma())==0)
+    {
+
+        float L=ac.getlungime();
+
+        float l=ac.getlatime();
+
+
+        sup=l*L*5;
+    }
+    cout<<"Numar necesar de kilograme: "<<sup/1000<<" kg"<<endl;
+
+}
+
+class Crustacee:public Pesti
+{
+protected:
+    string* tipalimentatief;
+    string* tipalimentaties;
+    int* nrhranaf;
+    int* nrhranas;
+    string** hranaf;
+    string** hranas;
+    list<string>databasec;            ///transformat in list
+
+public:
+    friend istream& operator>>(istream& in,Crustacee& ss);
+    friend ostream& operator<<(ostream& out, const Crustacee& ss );
+
+      list<string> getdatabasec()
+    {
+        return this->databasec;
+    }
+    void setdatabasec(list<string>db)
+    {   list<string>::iterator it;
+        this->databasec=db;
+       // for(int i=0; i<databasec.size(); i++)
+           // cout<<databasec[i]<<" ";
+
+        for(it=db.begin();it!=db.end();++it)
+            cout<<*it<<" ";
+    }
+    void watertemp()
+    {
+        if(this->temp>=24 &&this->temp<=27)
+            cout<<endl<<"TEMPERATURA ESTE OK";
+        else
+            cout<<endl<<"NU INTRODUCETI CRUSTACEELE IN ACVARIU";
+    }
+    void waterparam()
+    {
+        if(this->calciu<=400 && this->nitrat>30 && this->nitrat<40 && this->ph>=6 && this->ph<=8)
+            cout<<endl<<"CONDITIILE SUNT PERFECTE";
+        else
+            cout<<endl<<"ACVARIUL TREBUIE CICLAT";
+    }
+    void instock()
+    {
+        int ok=0;
+        cout<<endl<<"Crustaceea dorita: ";
+        cin>>this->pestisor;
+
+
+         for(string d: databasec)
+            if(d==this->pestisor)
+            {
+                cout<<endl<<"Crustaceea "<<this->pestisor<<" este inca in stoc";
+                ok=1;
+                break;
+            }
+        /*for(int i=0; i<this->nrfreshspecies; i++)
+        {
+
+            if(this->pestisor==(this->speciesf[i]))
+                if(this->stockofeachf[i]!=0)
+                {
+                    cout<<endl<<"Crustaceea "<<this->pestisor<<" este inca in stoc";
+                    ok=1;
+                    break;
+                }
+        }
+        for(int i=0; i<this->nrsaltspecies; i++)
+        {
+
+            if(this->pestisor==(this->speciess[i]))
+                if(this->stockofeachs[i]!=0)
+                {
+                    cout<<endl<<"Crustaceea "<<this->pestisor<<" este inca in stoc";
+                    ok=1;
+                    break;
+                }
+        }*/
+        if(ok==0)
+            cout<<endl<<"Crustaceea cautat nu mai este in stoc";
+
+    }
+    Crustacee():Pesti()
+    {
+        this->tipalimentatief=NULL;
+        this->tipalimentaties=NULL;
+        this->nrhranaf=NULL;
+        this->nrhranas=NULL;
+        this->hranaf=NULL;
+        this->hranas=NULL;
+    }
+    Crustacee(int nrfreshspecies,int nrsaltspecies,string* speciess,string* speciesf,bool displaystockorbreed,int* stockofeachf,int* breedofeachf,int* stockofeachs,int* breedofeachs,string pestisor,string* tipalimentatief,string*tipalimentaties, int* nrhranaf,int*nrhranas,string** hranaf,string**hranas,int temp,int ph,int calciu,int nitrat):Pesti(nrfreshspecies,nrsaltspecies,speciess,speciesf,displaystockorbreed,stockofeachf,breedofeachf,stockofeachs,breedofeachs,pestisor,temp,ph,calciu,nitrat)
+    {
+        this->tipalimentatief=new string[nrfreshspecies];
+        for(int i=0; i<this->nrfreshspecies; i++)
+            this->tipalimentatief[i]=tipalimentatief[i];
+
+        this->tipalimentaties=new string[nrsaltspecies];
+        for(int i=0; i<this->nrsaltspecies; i++)
+            this->tipalimentaties[i]=tipalimentaties[i];
+
+        ///initializez numarul de hranuri
+        this->nrhranaf=new int[nrfreshspecies];
+        for(int i=0; i<this->nrfreshspecies; i++)
+            this->nrhranaf[i]=nrhranaf[i];
+        ///*
+        ///aloc spatiu in matrice pe linii si coloane
+        this->hranaf=new string*[nrfreshspecies];
+        for(int i=0; i<this->nrfreshspecies; i++)
+        {
+
+            this->hranaf[i]=new string[nrhranaf[i]];
+
+        }
+
+
+        ///initializez matricea pe linii si coloane
+        for(int i=0; i<this->nrfreshspecies; i++)
+            for(int j=0; j<this->nrhranaf[i]; j++)
+                this->hranaf[i][j]=hranaf[i][j];
+        ///*/
+
+
+
+        ///initializez numarul de hranuri
+        this->nrhranas=new int[nrsaltspecies];
+        for(int i=0; i<this->nrsaltspecies; i++)
+            this->nrhranas[i]=nrhranas[i];
+
+
+
+        ///aloc spatiu in matrice pe linii si coloane
+        this->hranas=new string*[nrsaltspecies];
+        for(int i=0; i<this->nrsaltspecies; i++)
+        {
+
+            this->hranas[i]=new string[nrhranas[i]];
+
+        }
+
+
+        ///initializez matricea pe linii si coloane
+        for(int i=0; i<this->nrsaltspecies; i++)
+            for(int j=0; j<this->nrhranas[i]; j++)
+                this->hranas[i][j]=hranas[i][j];
+
+
+    }
+    Crustacee(const Crustacee& ss):Pesti(ss)
+    {
+        this->tipalimentatief=new string[ss.nrfreshspecies];
+        for(int i=0; i<ss.nrfreshspecies; i++)
+            this->tipalimentatief[i]=ss.tipalimentatief[i];
+
+        this->tipalimentaties=new string[ss.nrsaltspecies];
+        for(int i=0; i<ss.nrsaltspecies; i++)
+            this->tipalimentaties[i]=ss.tipalimentaties[i];
+
+        ///initializez numarul de hranuri
+        this->nrhranaf=new int[ss.nrfreshspecies];
+        for(int i=0; i<ss.nrfreshspecies; i++)
+            this->nrhranaf[i]=ss.nrhranaf[i];
+        ///aloc spatiu in matrice pe linii si coloane
+        this->hranaf=new string*[ss.nrfreshspecies];
+        for(int i=0; i<ss.nrfreshspecies; i++)
+        {
+
+            this->hranaf[i]=new string[ss.nrhranaf[i]];
+
+        }
+
+
+        ///initializez matricea pe linii si coloane
+        for(int i=0; i<ss.nrfreshspecies; i++)
+            for(int j=0; j<ss.nrhranaf[i]; j++)
+                this->hranaf[i][j]=ss.hranaf[i][j];
+
+
+
+
+        ///initializez numarul de hranuri
+        this->nrhranas=new int[ss.nrsaltspecies];
+        for(int i=0; i<ss.nrsaltspecies; i++)
+            this->nrhranas[i]=ss.nrhranas[i];
+
+
+        ///aloc spatiu in matrice pe linii si coloane
+        this->hranas=new string*[ss.nrsaltspecies];
+        for(int i=0; i<ss.nrsaltspecies; i++)
+        {
+
+            this->hranas[i]=new string[ss.nrhranas[i]];
+
+        }
+
+
+        ///initializez matricea pe linii si coloane
+        for(int i=0; i<ss.nrsaltspecies; i++)
+            for(int j=0; j<ss.nrhranas[i]; j++)
+                this->hranas[i][j]=ss.hranas[i][j];
+    }
+    virtual ~Crustacee()
+    {
+
+
+
+        if(this->hranas!=NULL)
+        {
+            for(int i=0; i<this->nrsaltspecies; i++)
+                delete[]  this->hranas[i];
+            delete[] this->hranas;
+        }
+        if(this->hranaf!=NULL)
+        {
+            for(int i=0; i<this->nrfreshspecies; i++)
+                delete[] this->hranaf[i];
+            delete[] this->hranaf;
+        }
+
+        if(this->nrhranaf!=NULL)
+            delete[] this-> nrhranaf;
+        if(this->nrhranas!=NULL)
+            delete[] this->nrhranas;
+
+        if(this->tipalimentatief!=NULL)
+            delete[] this->tipalimentatief;
+        if(this->tipalimentaties!=NULL)
+            delete[] this->tipalimentaties;
+
+       // cout<<"vreodata";
+    }
+    Crustacee& operator=(const Crustacee& ss)
+    {
+        if(this!=&ss)
+        {
+            Pesti::operator=(ss);
+
+            if(this->hranaf!=NULL)
+            {
+                for(int i=0; i<this->nrfreshspecies; i++)
+                    delete[] hranaf[i];
+                delete[] hranaf;
+            }
+            if(this->hranas!=NULL)
+            {
+                for(int i=0; i<this->nrsaltspecies; i++)
+                    delete[] hranas[i];
+                delete[] hranas;
+            }
+            if(this->nrhranaf!=NULL)
+                delete[] this-> nrhranaf;
+            if(this->nrhranas!=NULL)
+                delete[] this->nrhranas;
+
+            if(this->tipalimentatief!=NULL)
+                delete[] this->tipalimentatief;
+            if(this->tipalimentaties!=NULL)
+                delete[] this->tipalimentaties;
+
+            this->tipalimentatief=new string[ss.nrfreshspecies];
+            for(int i=0; i<ss.nrfreshspecies; i++)
+                this->tipalimentatief[i]=ss.tipalimentatief[i];
+
+            this->tipalimentaties=new string[ss.nrsaltspecies];
+            for(int i=0; i<ss.nrsaltspecies; i++)
+                this->tipalimentaties[i]=ss.tipalimentaties[i];
+
+            ///initializez numarul de hranuri
+            this->nrhranaf=new int[ss.nrfreshspecies];
+            for(int i=0; i<ss.nrfreshspecies; i++)
+                this->nrhranaf[i]=ss.nrhranaf[i];
+            ///aloc spatiu in matrice pe linii si coloane
+            this->hranaf=new string*[ss.nrfreshspecies];
+            for(int i=0; i<ss.nrfreshspecies; i++)
+            {
+
+                this->hranaf[i]=new string[ss.nrhranaf[i]];
+
+            }
+
+
+            ///initializez matricea pe linii si coloane
+            for(int i=0; i<ss.nrfreshspecies; i++)
+                for(int j=0; j<ss.nrhranaf[i]; j++)
+                    this->hranaf[i][j]=ss.hranaf[i][j];
+
+
+
+
+            ///initializez numarul de hranuri
+            this->nrhranas=new int[ss.nrsaltspecies];
+            for(int i=0; i<ss.nrsaltspecies; i++)
+                this->nrhranas[i]=ss.nrhranas[i];
+
+
+            ///aloc spatiu in matrice pe linii si coloane
+            this->hranas=new string*[ss.nrsaltspecies];
+            for(int i=0; i<ss.nrsaltspecies; i++)
+            {
+
+                this->hranas[i]=new string[ss.nrhranas[i]];
+
+            }
+
+
+            ///initializez matricea pe linii si coloane
+            for(int i=0; i<ss.nrsaltspecies; i++)
+                for(int j=0; j<ss.nrhranas[i]; j++)
+                    this->hranas[i][j]=ss.hranas[i][j];
+        }
+        return *this;
+    }
+};
+istream& operator>>(istream& in, Crustacee& ss)
+{
+    in >> (Pesti&)ss;
+
+
+///apa dulce
+    if(ss.tipalimentatief!=NULL)
+        delete[] ss.tipalimentatief;
+
+    ss.tipalimentatief=new string[ss.nrfreshspecies];
+    if(ss.nrhranaf!=NULL)
+        delete[] ss.nrhranaf;
+    ss.nrhranaf=new int[ss.nrfreshspecies];
+    for(int i=0; i<ss.nrfreshspecies; i++)
+    {
+        cout<<endl<<"Tip alimentatie ("<<ss.speciesf[i]<<"): ";
+        in>>ss.tipalimentatief[i];
+        cout<<endl<<"Numar de alimente ";
+        in>>ss.nrhranaf[i];
+
+    }
+    if(ss.hranaf!=NULL)
+    {
+        for(int i=0; i<ss.nrfreshspecies; i++)
+            delete[] ss.hranaf[i];
+        delete[] ss.hranaf;
+
+    }
+
+    ss.hranaf=new string*[ss.nrfreshspecies];
+    for(int i=0; i<ss.nrfreshspecies; i++)
+        ss.hranaf[i]=new string[ss.nrhranaf[i]];
+
+
+
+    for(int i=0; i<ss.nrfreshspecies; i++)
+    {
+        cout<<endl<<"Alimente pentru ("<<ss.speciesf[i]<<")";
+        for(int j=0; j<ss.nrhranaf[i]; j++)
+        {
+            cout<<ss.nrhranaf[i];
+            in>>ss.hranaf[i][j];
+        }
+    }
+
+///apa sarata
+    if(ss.tipalimentaties!=NULL)
+        delete[] ss.tipalimentaties;
+
+    ss.tipalimentaties=new string[ss.nrsaltspecies];
+    if(ss.nrhranas!=NULL)
+        delete[] ss.nrhranas;
+    ss.nrhranas=new int[ss.nrsaltspecies];
+    for(int i=0; i<ss.nrsaltspecies; i++)
+    {
+        cout<<endl<<"Tip alimentatie ("<<ss.speciess[i]<<"): ";
+        in>>ss.tipalimentaties[i];
+        cout<<endl<<"Numar de alimente ";
+        in>>ss.nrhranas[i];
+
+    }
+    if(ss.hranas!=NULL)
+    {
+        for(int i=0; i<ss.nrsaltspecies; i++)
+            delete[] ss.hranas[i];
+        delete[] ss.hranas;
+
+    }
+
+    ss.hranas=new string*[ss.nrsaltspecies];
+    for(int i=0; i<ss.nrsaltspecies; i++)
+        ss.hranas[i]=new string[ss.nrhranas[i]];
+
+
+
+    for(int i=0; i<ss.nrsaltspecies; i++)
+    {
+        cout<<endl<<"Alimente pentru ("<<ss.speciess[i]<<")";
+        for(int j=0; j<ss.nrhranas[i]; j++)
+        {
+            cout<<ss.nrhranas[i];
+            in>>ss.hranas[i][j];
+        }
+    }
+
+    return in;
+
+
+
+}
+ostream& operator<<(ostream& out, const Crustacee& ss )
+{
+    out << (Pesti&)ss;
+
+    ///apa dulce
+    for(int i=0; i<ss.nrfreshspecies; i++)
+    {
+        out<<endl<<"Specia "<<ss.speciesf[i]<<" este "<<ss.tipalimentatief[i]<<" cu o alimentatie ce consta in "<<ss.nrhranaf[i]<<" hranuri bogate in vitamine si proteine benefice ";
+        out<<endl<<"Anume: ";
+        for(int j=0; j<ss.nrhranaf[i]; j++)
+            out<<ss.hranaf[i][j]<<" ";
+    }
+
+
+
+    ///apa sarata
+    for(int i=0; i<ss.nrsaltspecies; i++)
+    {
+        out<<endl<<"Specia "<<ss.speciess[i]<<" este "<<ss.tipalimentaties[i]<<" cu o alimentatie ce consta in "<<ss.nrhranas[i]<<" hranuri bogate in vitamine si proteine benefice ";
+        out<<endl<<"Anume: ";
+        for(int j=0; j<ss.nrhranas[i]; j++)
+            out<<ss.hranas[i][j]<<" ";
+    }
+
+
+    return out;
+}
+class MeniuInteractiv{
+private:
+    static MeniuInteractiv *obiect;
+
+
+public:
+    static MeniuInteractiv* getInstance(){
+        if(!obiect)
+            obiect=new MeniuInteractiv();
+
+
+        return obiect;
+    }
+
+    void meniu(){
+         fstream file("BazaDeDateACVARII.txt", ios::in | ios::out | ios::app);
+    fstream filead("BazaDeDateACVARIIadmin.txt", ios::in | ios::out | ios::app);
+    fstream filepstad("BDPESTIadmin.txt", ios::in | ios::out | ios::app);
+    fstream filecrstad("BDCRUSTACEEadmin.txt", ios::in | ios::out | ios::app);
+    fstream fileplntad("BDPLANTEadmin.txt", ios::in | ios::out | ios::app);
+    fstream filedecorad("BDDECORadmin.txt", ios::in | ios::out | ios::app);
+  acvariu ac;
+    ListaAcvarii b;
+    Pesti pst;
+    Parametrii* ss[500];
+    Plante plnt;
+    Decoratiuni dec;
+    int k=1;
+    int i=0;while(k==1)
+    {
+        cout<<"\n[1] Admin" ;
+        cout<<"\n[2] Client" ;
+        cout<<"\n[3] Close Program" ;
+        int comanda;
+        cin>>comanda;
+        switch(comanda)
+        {
+        case 1:
+        {
+            b.setisadmin(1);
+            cout<<b.getisadmin();
+            cout<<"\n[1-lista acvarii]"<<endl;
+            cout<<"[2-pesti/crustacee] "<<endl;
+            cout<<"[3-plante]"<<endl;
+            cout<<"[4-substrat] "<<endl;
+            cout<<"[5-Close Program] "<<endl;
+            int comanda1;
+            cin>>comanda1;
+            switch(comanda1)
+            {
+            case 1:
+            {
+                filead.seekp(0);
+                if(!filead.is_open())
+                    cout<<"error while opening the filead";
+                else
+                {
+                    cin>>b;
+
+                }
+
+                int m;
+                int com;
+                cout<<endl<<"Se doreste ca vreun acvariu sa fie anulat de pe comanda?[1-DA][0-REVENITI LA MENIU]";
+                cin>>com;
+                if(com==1)
+                {
+                    cout<<endl<<"A cata comanda doriti sa o anulati?";
+                    int nrcom;
+                    cin>>nrcom;
+                    b.sterge(nrcom);
+                }
+                filead<<b;
+                break;
+            }
+            case 2:
+            {
+
+                cout<<"[1-Pesti]"<<endl;
+                cout<<"[2-Crustacee]"<<endl;
+                int comanda2;
+                cin>>comanda2;
+                switch(comanda2)
+                {
+                case 1:
+                {
+                    filepstad.seekp(0);
+                    if(!filepstad.is_open())
+                        cout<<"error while opening the filepstad";
+                    else
+                    {
+                        ss[i]=new Pesti();
+                        cin>>static_cast<Pesti&>(*(ss[i]));
+                        //cout<<static_cast<Pesti&>(*(ss[i]));
+                        //cout<<endl<<"111111111111";
+                        // cout<<*ss[i];
+                        // filepstad<<static_cast<Pesti&>(*(ss[i])).getnrfreshspecies();
+
+                        for(int j=0; j<static_cast<Pesti&>(*(ss[i])).getnrfreshspecies(); j++)
+                            filepstad<<*(static_cast<Pesti&>(*(ss[i])).getspeciesf()+j)<<" "<<*(static_cast<Pesti&>(*(ss[i])).getstockofeachf()+j)<<endl;
+                        for(int j=0; j<static_cast<Pesti&>(*(ss[i])).getnrsaltspecies(); j++)
+                            filepstad<<*(static_cast<Pesti&>(*(ss[i])).getspeciess()+j)<<" "<<*(static_cast<Pesti&>(*(ss[i])).getstockofeachs()+j)<<endl;
+
+                        //cout<<*(ac.gettoaterecenziile()+i)<<" "<<endl;
+                        i++;
+                    }
+
+
+                    //cout<<static_cast<Pesti&>(*(ss[i]));
+
+
+                    break;
+                }
+                case 2:
+                {
+                    filecrstad.seekp(0);
+                    if(!filecrstad.is_open())
+                        cout<<"error while opening the filecrstad";
+                    else
+                    {
+                        ss[i]=new Crustacee();
+                        cin>>static_cast<Crustacee&>(*(ss[i]));
+                        for(int j=0; j<static_cast<Pesti&>(*(ss[i])).getnrfreshspecies(); j++)
+                            filecrstad<<*(static_cast<Pesti&>(*(ss[i])).getspeciesf()+j)<<" "<<*(static_cast<Pesti&>(*(ss[i])).getstockofeachf()+j)<<endl;
+                        for(int j=0; j<static_cast<Pesti&>(*(ss[i])).getnrsaltspecies(); j++)
+                            filecrstad<<*(static_cast<Pesti&>(*(ss[i])).getspeciess()+j)<<" "<<*(static_cast<Pesti&>(*(ss[i])).getstockofeachs()+j)<<endl;
+                        i++;
+
+
+                    }
+
+
+                    // cout<<static_cast<Crustacee&>(*(ss[i]));
+
+
+                    break;
+                }
+                }
+                break;
+            }
+            case 3:
+            {    fileplntad.seekp(0);
+                if(!fileplntad.is_open())
+                    cout<<"error while opening the fileplntad";
+                else
+                {
+                   cin>>plnt;
+                    for(int pi=0;pi<plnt.getnrplante();pi++)
+                        fileplntad<<*(plnt.getspeciiplante()+pi)<<" "<<*(plnt.getstockofeachp()+pi)<<endl;
+                }
+
+                // cout<<plnt;
+                break;
+            }
+            case 4:
+            {   filedecorad.seekp(0);
+            if(!filedecorad.is_open())
+                    cout<<"error while opening the filedecorad";
+                else
+                {
+                   cin>>dec;
+                    for(int di=0;di<dec.getnrsub();di++)
+                        filedecorad<<*(dec.getsubstrat()+di)<<" "<<*(dec.getboolfert()+di)<<endl;
+                }
+
+                //  cout<<dec;
+                break;
+            }
+            case 5:
+            {
+                k=0;
+                break;
+            }
+            }
+            break;
+        }
+        case 2:
+        {
+            b.setisadmin(0);
+            int comanda1;
+            cout<<"\n[1] vizualizare LISTA acvarii"<<endl;
+            cout<<"\n[2] ACVARII pe comanda"<<endl;
+            cout<<"\n[3] vizualizare CRUSTACEE pe stoc"<<endl;
+            cout<<"\n[4] vizualizare PESTI pe stoc"<<endl;
+            cout<<"\n[5] vizualizare PLANTE pe stoc"<<endl;                ///functionalitati checkfish checkplant
+            cout<<"\n[6] vizualizare SUBSTRAT"<<endl;
+
+            cin>>comanda1;
+            switch(comanda1)
+            {
+            case 1:
+            {
+                cout<<"~    LISTA ACVARIILOR COMANDATA    ~"<<endl;
+                /*file.seekg(0);
+
+                string line;
+                while(file.good())                      ///<------varianta pentru afisare lista comenzi utilizator
+                {
+                    getline(file,line);
+                    cout<<line<<endl;
+                }
+
+                file.clear();
+                */
+
+                filead.seekg(0);
+
+                string line;
+                while(filead.good())
+                {
+                    ///<-----varianta pentru afisare lista acvarii introduse de admin
+                    getline(filead,line);
+                    cout<<line<<endl;
+                }
+
+                filead.clear();
+                break;
+            }
+            case 2:
+            {
+
+                file.seekp(0);
+                if(!file.is_open())
+                    cout<<"error while opening the file";
+                else
+                {
+                    cin>>b;
+
+                }
+
+                int m;
+                int com;
+                cout<<endl<<"Se doreste ca vreun acvariu sa fie anulat de pe comanda?[1-DA][0-REVENITI LA MENIU]";
+                cin>>com;
+                if(com==1)
+                {
+                    cout<<endl<<"A cata comanda doriti sa o anulati?";
+                    int nrcom;
+                    cin>>nrcom;
+                    b.sterge(nrcom);
+                }
+                file<<b;
+                file<<endl<<"Utilizatorul are de platit in total suma de: "<<b.TOTAL()<<" cu tot cu adaos comercial";
+                break;
+            }
+
+            case 3:
+            {
+
+                cout<<"Crustaceele se cumpara numai din magazin !!"<<endl;
+
+                /* filecrstad.seekg(0);
+
+                 string line;
+                 while(filecrstad.good())
+                 {                                       ///<-----varianta pentru afisarea intregului stock de pesti
+                     getline(filecrstad,line);
+                     cout<<line[0]<<endl;
+                 }
+
+                 filecrstad.clear();*/
+                filecrstad.seekp(0);
+                string word;
+                list<string>vs1;
+                // vector<int>::iterator f;
+
+                while(filecrstad>>word)
+                {
+                    vs1.push_back(word);
+                    filecrstad>>word;
+                }
+                auto z=vs1.begin();
+                /*for(auto itr=vs1.begin();itr!=vs1.end();itr++)
+                {
+                        cout<<*itr<<" ";
+                }*/
+                for(string d: vs1)
+                 cout<<d<<" ";
+
+//ac.settoaterecenziile(nu,4);
+                if(i==0)
+                {
+                    Crustacee crst2;
+                    // crst2=dynamic_cast<Crustacee*> (ss[j]);
+                    // crst2=static_cast<Crustacee&>(*(ss[j]));
+                    crst2.setdatabasec(vs1);
+                    crst2.instock();
+
+                }
+
+                for(int j=0; j<i; j++)
+                {
+                    if(typeid(*(ss[j]))==typeid(Crustacee))
+                    {
+                        Crustacee *crst2;
+                        crst2=dynamic_cast<Crustacee*> (ss[j]);
+                        crst2->setdatabasec(vs1);
+
+                        // crst2=static_cast<Crustacee&>(*(ss[j]));
+
+                        crst2->instock();
+                        // cout<<"!!!!!!!!!!!!!!!"<<v2;
+                        //static_cast<Crustacee&>(*(ss[j])).setdatabase(vs);
+                        //vector<string> &v2=static_cast<Crustacee&>(*(ss[j])).getdatabasec();
+                        //for(string d: v2)
+                        // cout<<d<<" ";
+                        //ss[j]->instock();
+                        //ss[j]->waterparam();
+                        crst2->waterparam();
+                        //ss[j]->watertemp();
+                        crst2->watertemp();
+                    }
+                }
+                filecrstad.clear();
+                break;
+
+            }
+
+            case 4:
+            {
+                cout<<"Pestii se cumpara numai din magazin !!"<<endl;
+                /* filepstad.seekg(0);
+
+                 string line;
+                 while(filepstad.good())
+                 {                                       ///<-----varianta pentru afisarea intregului stock de pesti
+                     getline(filepstad,line);
+                     cout<<line[0]<<endl;
+                 }
+
+                 filepstad.clear();*/
+                filepstad.seekp(0);
+                string word;
+                vector<string>vs;
+                // vector<int>::iterator f;
+
+                while(filepstad>>word)
+                {
+                    vs.push_back(word);
+                }
+                auto z=vs.begin();
+                while(z!=vs.end())
+                {
+                    z++;
+                    vs.erase(z);
+
+                }
+                //for(string d: vs)
+                // cout<<d<<" ";
+
+
+                if(i==0)
+                {
+                    Pesti pst2;
+                    // pst2=dynamic_cast<Pesti*> (ss[j]);
+                    // pst2=static_cast<Pesti&>(*(ss[j]));
+                    pst2.setdatabase(vs);
+                    pst2.instock();
+
+                }
+                for(int j=0; j<i; j++)
+                {
+
+                    if(typeid(*(ss[j]))==typeid(Pesti))
+                    {
+                        Pesti *pst2;
+                        pst2=dynamic_cast<Pesti*> (ss[j]);
+                        pst2->setdatabase(vs);
+
+                        // pst2=static_cast<Pesti&>(*(ss[j]));
+
+                        pst2->instock();
+
+
+
+
+
+                        // cout<<"!!!!!!!!!!!!!!!"<<v2;
+                        //static_cast<Pesti&>(*(ss[j])).setdatabase(vs);
+                        //vector<string> &v2=static_cast<Pesti&>(*(ss[j])).getdatabase();
+                        //for(string d: v2)
+                        // cout<<d<<" ";
+                        //ss[j]->instock();
+                        //ss[j]->waterparam();
+                        pst2->waterparam();
+                        //ss[j]->watertemp();
+                        pst2->watertemp();
+                    }
+                }
+                filepstad.clear();
+                break;
+            }
+            case 5:
+            {fileplntad.seekp(0);
+             cout<<endl<<"Plantele se cumpara numai din magazin !!"<<endl;
+                set<string>s1;
+                string word;
+                while(fileplntad>>word)
+                    {
+                        s1.insert(word);
+                        fileplntad>>word;}
+             //   for(string d:s1)
+                   // cout<<d<<" ";
+                string pl;
+                cout<<endl;
+                cin>>pl;
+                if(s1.count(pl))
+                    cout<<endl<<pl<<" este in stoc ";
+                else
+                    cout<<endl<<"produsul cautat nu mai este in stoc";
+
+               // plnt.plantinstock();
+                fileplntad.clear();
+                break;
+            }
+            case 6:
+            {   filedecorad.seekp(0);
+               int ok=0;
+                map<string,int>h;
+                string word;
+                int word1;
+                while(filedecorad>>word)
+                {
+                    filedecorad>>word1;
+                    h.insert(pair<string,int>(word,word1));
+                }
+               /* map<string,int>::iterator mitr;
+                for(mitr=h.begin(); mitr!=h.end(); mitr++)
+                {
+                    cout<<mitr->first<<" "<<mitr->second<<endl;
+                }*/
+                cout<<endl<<"Substratul cautat: ";
+                string x;
+                cin>>x;
+                for (auto mitr = h.find(x); mitr != h.end(); mitr++)
+                {
+                    if(mitr->first==x)
+                      {ok=1;
+
+                        if(mitr->second==1)
+                            cout <<"Substratul "<< mitr->first <<" este in stoc si este "<<'\t'<< "fertil" <<endl;
+                        else
+                            if(mitr->second!=1)
+                            cout <<"Substratul "<< mitr->first <<" este in stoc si este "<<'\t'<< "steril" <<endl;
+                      }
+                }
+
+                if(ok==0)
+                    cout<<endl<<"Substratul cautat nu este momentan in stoc";
+                for(int j=0; j<b.getnrac(); j++)
+                {
+
+                    //cout<<dec;
+                    kilograme(b[j]);}
+            }
+            filedecorad.clear();
+
+            }
+            break;
+        }
+        case 3:
+        {
+            k=0;
+            break;
+        }
+        }
+    }
+
+
+    }
+
+};
+MeniuInteractiv* MeniuInteractiv::obiect=0;
+
+
+
+///main
+//void functi(int** str)
+//{
+
+//}
+
+
+
+
+
+int main()
+{
+
+
+
+
+
+
+
+
+
+ MeniuInteractiv *meniulMeu=meniulMeu->getInstance();
+
+    meniulMeu->meniu();
+
+
+
+    /*
+    double volum,r;
+    char forma[]="patrat";
+    int pretaccesorii[]= {100,200,300};
+    string numeaccesorii[]= {"incalzitor","filtru","decor"};
+    float recenzii[]= {2.4,5.7,6.9};
+    //acvariu ac(100,200,300,30,true,500,forma,5,3,3,pretaccesorii,600,numeaccesorii,'D',"jwl",recenzii);
+    //cout<<ac;
+    */
+
+    /*
+    acvariu ac(100,200,300,30,true,500,forma,5,3,3,pretaccesorii,600,numeaccesorii,'D',"jwl",recenzii);
+    acvariu ac1(100,200,300,30,true,500,forma,5,3,3,pretaccesorii,600,numeaccesorii,'D',"jwl",recenzii);
+    acvariu ac2(100,200,300,30,true,500,forma,5,3,3,pretaccesorii,600,numeaccesorii,'D',"jwl",recenzii);
+    acvariu lac[]={ac,ac1,ac2};
+    ListaAcvarii lisa(3,lac);
+    ListaAcvarii lis1=lisa;
+    */
+
+    /*
+    acvariu a,c;
+    //cin>>a>>c;
+    ListaAcvarii b;
+    cin>>b;
+    int m;
+    int com;
+    //m=b.getnrac();
+    cout<<endl<<"Se doreste ca vreun acvariu sa fie anulat de pe comanda?[1-DA]";
+    cin>>com;
+    if(com==1){
+    cout<<endl<<"A cata comanda doriti sa o anulati?";
+    int nrcom;
+    cin>>nrcom;
+    b.sterge(nrcom);
+    }
+    cout<<endl<<"Utilizatorul are de platit in total suma de: "<<b.TOTAL();
+    ///clasa virtuala cu has a ;) !!!!!!!!!!!! ( de facut pe viitor)
+
+    ///b=b+a+c; /// aici am testat daca functioneaza operatorul + intre obiecete diferite
+    ///cout<<b;
+    */
+/// exemplificarea conceptului de virtualizare
+    /*
+    //        Parametrii* ss[1];
+          //  ss[0]=new Crustacee;
+          //  cin>>*ss[0];
+          //  cout<<*ss[0];                       ///aici se apeleaza atributele din instanta, anume din parametrii, trebuie facut un cast , transformate in obiectul propriu zis(down casting din parinte in copil)
+          //  ss[1]=new Pesti;
+          //  cin>>*ss[1];
+          //  cout<<*ss[1];
+          ss[0]=new Crustacee();
+          cin>>static_cast<Crustacee&>(*(ss[0]));
+          cout<<static_cast<Crustacee&>(*(ss[0]));
+          cout<<endl;
+          ss[0]->instock();
+           cout<<endl;
+         ss[0]->waterparam();
+           cout<<endl;
+          ss[0]->watertemp();
+
+    */
+
+
+    /*Crustacee ss;
+    cin>>ss;
+    cout<<ss;
+    ss.waterparam();
+    ss.watertemp();
+    ss.instock();
+
+    Pesti fsh;
+    cin>>fsh;
+    cout<<fsh;
+    fsh.waterparam();
+    fsh.instock();
+
+    fsh.watertemp();
+    */
+//Parametrii* ppm;
+
+//Parametrii* pp1=ppm;
+
+
+    /*
+        string s[]= {"king","kong","kan"};
+        string f[]= {"king","kong","kan"};
+        int sos[]= {3,2,1};
+        int bos[]= {1,1,1};
+        int sof[]= {3,4,5};
+        int bof[]= {6,5,1};
+        string tipas[]= {"omnivor","carnivor","erbivor"};
+        string tipaf[]= {"carnivor","carnivor","erbivor"};
+        int nrhs[]= {3,3,3};
+        int nrhf[]= {3,3,3};
+        string dis[3][3]= {{"a","b","c"},{"b","c","-"},{"a","-","-"}};
+        string dif[3][3]= {{"a","-","-"},{"a","b","-"},{"a","b","c"}};
+        //int ar[3][3]= {{1,2,3},{1,2,3},{1,2,3}};
+        //acvariu ac;
+        //Decoratiuni dec;
+        // functi((int**) ar);
+        string *b[3];  // surrogate
+        for (int i = 0; i < 3; ++i)
+        {
+            b[i] = dis[i];
+        }
+        string *d[3];
+         for (int i = 0; i < 3; ++i)
+        {
+            d[i] = dif[i];
+        }
+        //Crustacee ss;
+    //    cin>>ss;
+      //  cout<<ss;
+
+        Crustacee ss(3,3,s,f,true,sof,bof,sos,bos,"king",tipaf,tipas,nrhf,nrhs,d,b,30,7,400,31);
+        Crustacee s1=ss;
+        cout<<ss;
+        */
+    //cout<<endl<<s1;
+    //Crustacee s1=ss;
+    //Crustacee ss,s1,s2;
+    //cin>>ss>>s1>>s2;
+    // cout<<ss<<s1<<s2;
+
+
+    //cin>>ac;
+    //cout<<ac;
+    //kilograme(ac);
+
+
+
+
+    /*    string f[]= {"moss","duckweed","anubias nana"};
+        string s[]= {"coral1","coral2","coral3"};
+        int nf[]= {12,20,2};
+        int bf[]= {1,1,1                                                                <-----------functionalitate clasa plante
+                   int ns[]= {2,1,5};
+                   int bs[]= {2,0,5};
+                   Plante plnt(3,3,s,f,false,nf,bf,ns,bs);
+                   checkplant(plnt,2);
+                   */
+
+    //Decoratiuni dec;
+    //Decoratiuni dec1=dec;
+
+
+    /*
+        string s[]= {"substrat1","substrat inert"}; ///<--
+        float p[]= {69.99,45.50};
+        int f[]= {1,0};
+        acvariu ac;
+        cin>>ac;
+        Decoratiuni dec1;
+
+        cin>>dec1;
+        cout<<dec1;
+        float kilo;
+
+        kilo=kilograme(ac);
+        cout<<endl<<"Pentru acvariul achizitionat anterior va fi nevoie de "<<kilo<<"  de substrat pentru a obtine un mediu optim de plantare";  ///<-- functionalitate clasa decor
+        //Decoratiuni dec;
+       //cin>>dec;
+        //cout<<dec;
+        //Decoratiuni dec1();
+         //Decoratiuni dec1(s,2);
+        //Decoratiuni dec1(2,s,p,f);
+        Decoratiuni ac1,ac2;
+        ac1=ac2; */
+
+
+
+    /*
+            int temp=27;
+            int ph=7;
+            int calciu=400;
+            int nitrat=31;
+            string f[]= {"angelfish","cory","platy"};
+            string s[]= {"nemo","shark","pufferfish"};
+            int nf[]= {12,10,24};
+            int bf[]= {1,1,2};
+            int ns[]= {2,0,5};
+            int bs[]= {2,0,5};
+            Pesti fsh(3,3,s,f,true,nf,bf,ns,bs,"angelfish",temp,ph,calciu,nitrat);
+            //Pesti fsh1=fsh;
+            //cin>>fsh;
+            //Pesti fsh1(3,3);
+            cout<<endl;
+            cout<<float(fsh);  ///nr de pesti de apa dulce
+            cout<<endl;
+            cout<<fsh[1]<<endl;///shark
+            cout<<endl;
+            checkfish(fsh,1);///functionalitate clasa pesti
+
+    */
+
+
+
+    // if(fsh==fsh)
+    // cout<<"DA";
+    //else cout<<"NU";
+    //a1=a2;
+    //cin>>a1;
+    //cout<<a1;
+    /* double volum,r;
+     // char forma[]="patrat";
+     // int pretaccesorii[]= {100,200,300};
+     ///string numeaccesorii[]= {"incalzitor","filtru","decor"};
+     ///float recenzii[]= {2.4,5.7,6.9};
+     ///acvariu ac(100,200,300,40,true,1000,forma,10,3,3,pretaccesorii,numeaccesorii,'D',"jbl",recenzii);
+     ///cout<<ac;
+     ///acvariu ac1(ac);
+     /// cout<<ac1;
+     acvariu ac2,ac3,suma;
+     ///cin>>ac2;
+     cin>>ac3;
+     cin>>ac2;
+     //cout<<ac3;
+     //cout<<ac2;
+     if(strcmp("patrat",strlwr(ac3.getforma()))==0)
+     {
+         volum=ac3.getlungime()*ac3.getlungime()*ac3.getinaltime();
+
+     }
+     else if(strcmp("cerc",strlwr(ac3.getforma()))==0)
+     {
+
+         volum=(ac3.getraza()*ac3.getraza()*3.14)*ac3.getinaltime();
+
+     }
+     else if(strcmp("dreptunghi",strlwr(ac3.getforma()))==0)
+     {
+         volum=ac3.getlungime()*ac3.getinaltime()*ac3.getlatime();
+     }
+     //while(ac3.getnrpesti()<numarpestiperlitru(ac3,volum))
+     //{//cout<<++ac3;
+     //cout<<"ATENTIE S-A CRESCUT "<<endl;}
+     // while(ac3.getnrpesti()>numarpestiperlitru(ac3,volum))
+     // {//ac3--;
+     //cout<<ac3<<endl<<"ATENTIE S-A SCAZUT "<<endl;} /// <----------------------------------------de revenit si facut ceva util aici ///doar am testat functionalitatea
+     //cout<<"AAAAAAAAAAAAAAAAAAAAAAAAAAAA"<<sumadeachitat(ac2);
+     // cout<<"BBBBBBBBBBBBBBBBBBBBBBBBBBBB"<<sumadeachitat(ac3);
+     //int a;  a=sumadeachitat(ac2);
+     // ac3.setprettotal(sumadeachitat(ac3));
+     //ac2.setprettotal(sumadeachitat(ac2));
+     //int b;  b=sumadeachitat(ac3);
+     //cout<<"***"<<" "<<b;
+     //cout<<"zzzzzzzzzzzzzzzzzzzzzzzzzzzzzz"<<ac2.getprettotal()<<" "<<ac3.getprettotal();
+     ac3=ac3+ac2;
+     //cout<<ac2;
+     cout<<endl;
+     cout<<ac3;
+    */
+    /*double volum,l,L,h;
+    const char* rez;
+    char forma[]="cerc";
+    acvariu ac;
+    ac.setlungime(80);
+    ac.setlatime(38);
+    ac.setinaltime(40);
+    L=ac.getlungime();
+    l=ac.getlatime();
+    h=ac.getinaltime();
+    volum=(l*L*h)/1000;
+    ac.setforma(forma);
+    ac.setlitri(volum);
+    cout<<"Volumul unui acvariu este: "<<ac.getlitri()<<" litri."<<endl;
+    ac.setnrpesti(10);
+    if (numarpestiperlitru(ac)==0)
+        cout<<"Acvariul nu este recomandat pentru a intretine viata."<<endl;
+    else
+        cout<<"Este recomandat ca in acest acvariu"<<" de forma bazei un "<<ac.getforma()<<" sa fie introdusi un numar maxim de "<<numarpestiperlitru(ac)<<" pesti."<<endl;
+    ///cout<<"Alegeti forma: 'Cerc'  'Patrat'  'Dreptunghi'"<<endl;
+    ac.setnrrecenzii(4);
+    cout<<ac.getnrrecenzii()<<endl;
+    ///for(int i=0;i<ac.getnrrecenzii();i++)
+    ///cout<<*(ac.gettoaterecenziile()+i)<<" "<<endl;
+    float nu[]= {2.3,1.56,8.9,7.13}; ///datele date trebuie sa fie mai mici decat 10 inclusiv
+    ac.settoaterecenziile(nu,4);
+    cout<<"scorurile obtinu sunt de ";
+    for(int i=0; i<ac.getnrrecenzii(); i++)
+        cout<<*(ac.gettoaterecenziile()+i)<<", ";
+     rez=calculareratingacvariu(ac);
+     cout<<endl<<"Media review-urilor utilizatorilor pentru acest() acvariu este catalogata cu calificativul "<<rez<<".";
+    ac.setnumeproducator("aquaplus");
+    cout<<endl<<"Nume producator: "<<ac.getnumeproducator()<<".";
+    ac.setnumeproducator("jbl");
+    cout<<endl<<"Nume producator(nou): "<<ac.getnumeproducator()<<".";
+    string nume[]= {"filtru","filtru extern","pompa aer","incalzitor","pompa C02"};
+    cout<<endl<<*nume<<endl;
+    ac.setnraccesorii(5);
+    cout<<"Numarul de accesorii este "<<ac.getnraccesorii()<<endl;
+    ac.setstringstelutza(nume,ac.getnraccesorii());
+    cout<<"Accesoriile cumparate sunt: "<<endl;
+    for(int i=0; i<ac.getnraccesorii(); i++)
+        cout<<*(ac.getstringstelutza()+i)<<", ";
+    int preturi[]= {100,600,200,75,450};
+    cout<<endl<<"Cu preturile urmatoare: "<<endl;
+    ac.setpretaccesorii(preturi,ac.getnraccesorii());
+    for(int i=0; i<ac.getnraccesorii(); i++)
+        cout<<*(ac.getpretaccesorii()+i)<<",";*/
+
+
+
+    return 0;
+}
