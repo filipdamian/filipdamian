@@ -1,0 +1,72 @@
+{
+    "filter":[
+        {
+        "id":1,
+        "name": "filtru intern1",
+        "price":5078,
+        "imgName":"fi1.png",
+        "categ":"Filtru Intern"
+        },
+        {
+            "id":2,
+            "name": "filtru intern2",
+            "price":6078,
+            "imgName":"fi2.png",
+            "categ":"Filtru Intern"
+            },
+         {
+        "id":3,
+        "name": "filtru intern3",
+        "price":7078,
+        "imgName":"fi3.png",
+        "categ":"Filtru Intern"
+        },
+         {
+        "id":4,
+        "name": "filtru intern4",
+        "price":8078,
+        "imgName":"fi4.png",
+        "categ":"Filtru Intern"
+        },
+         {
+        "id":5,
+        "name": "filtru extern1",
+        "price":8078,
+        "imgName":"f1.png",
+        "categ":"Filtru Extern"
+        }
+        ,
+         {
+        "id":6,
+        "name": "filtru extern2",
+        "price":8078,
+        "imgName":"f2.png",
+        "categ":"Filtru Extern"
+        }
+        ,
+         {
+        "id":7,
+        "name": "filtru extern3",
+        "price":8078,
+        "imgName":"f3.png",
+        "categ":"Filtru Extern"
+        }
+        ,
+         {
+        "id":8,
+        "name": "filtru extern4",
+        "price":8078,
+        "imgName":"f4.png",
+        "categ":"Filtru Extern"
+        }
+        ,
+         {
+        "id":9,
+        "name": "filtru extern5",
+        "price":8078,
+        "imgName":"f5.png",
+        "categ":"Filtru Extern"
+        }
+        
+    ]
+}
