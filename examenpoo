@@ -1,0 +1,595 @@
+///CONSTANTIN FILIP DAMIAN--Grupa 142--
+///GNU GCC
+#include<iostream>
+#include<vector>
+#include<memory>
+#include<string>
+#include<functional>
+#include<algorithm>
+using namespace std;
+class interfata
+{
+private:
+    virtual void calcrating()=0;
+};
+class virus:public interfata{           //clasa abstracta ...
+private:
+public:
+
+    };
+class malware: public virus
+{
+protected:
+    float rating;
+    int zi;
+    int luna;
+    int an;
+    vector<string> nume;
+    string metifect;
+    vector<string>registrii;
+    friend istream& operator >>(istream& in, malware& mw);
+    friend ostream& operator <<(ostream& out, const malware& mw);
+public:
+      vector<string> getnume()      ///getter vect
+    {
+        return this->nume;
+    }
+    void setnume(vector<string>sn)      //setter vect
+    {
+        this->nume = sn;
+        for (int i = 0; i < nume.size(); i++)
+            cout << nume[i] << " ";
+    }
+
+    void calcrating()
+    {
+        rating=0;
+    }
+    malware():
+        rating(0),
+        zi(0),
+        luna(0),
+        an(0),
+        nume(),
+        metifect("unknown"),
+        registrii(){}
+    malware(float rating1, int zi1 , int luna1 , int an1 , vector <string> nume1, string metifect1, vector<string> registrii1):
+        rating(rating1),
+        zi(zi1),
+        luna(luna1),
+        an(an1),
+        nume(nume1),
+        metifect(metifect1),
+        registrii(registrii1){}
+    malware(const malware& mw)=default;
+    malware& operator=(const malware& mw)
+    {
+         if(this!=&mw)
+        {
+            if (!nume.empty())
+            {
+                nume.clear();
+                nume.shrink_to_fit();
+            }
+            if (!registrii.empty())
+            {
+                registrii.clear();
+                registrii.shrink_to_fit();
+            }
+           this->rating=mw.rating;
+           this->zi=mw.zi;
+           this->luna=mw.luna;
+           this->an=mw.an;
+           this->nume=mw.nume;
+           this->metifect=mw.metifect;
+           this->registrii=mw.registrii;
+        }
+        return *this;
+    }
+    ~malware(){
+    if (!nume.empty())
+            {
+                nume.clear();
+                nume.shrink_to_fit();
+            }
+            if (!registrii.empty())
+            {
+                registrii.clear();
+                registrii.shrink_to_fit();
+            }
+
+    }
+};
+istream& operator >>(istream& in, malware& mw)
+{
+
+    cout<<endl<<"Ratingul impactului";
+    in>>mw.rating;
+    cout<<endl<<"data de infectare";
+    cout<<endl<<"zi";
+    in>>mw.zi;
+     cout<<endl<<"luna";
+    in>>mw.luna;
+     cout<<endl<<"an";
+    in>>mw.an;
+    int n;
+    cout<<endl<<"numarul de cuvinte din numele virusului";
+    in>>n;
+    cout<<endl<<"numele virusului";
+    string c;
+    for(int i=0;i<n;i++)
+    {   in>>c;
+        mw.nume.push_back(c);
+    }
+    cout<<"metoda de infectare"<<endl;
+    in>>mw.metifect;
+    int m;
+    cout<<endl<<"nr de registrii";
+    in>>m;
+    for(int i=0;i<m;i++)
+    {
+        in>>c;
+        mw.registrii.push_back(c);
+    }
+
+
+    return in ;
+}
+ostream& operator <<(ostream& out, const malware& mw)
+{
+    out<<endl<<"Ratingul impactului";
+    out<<mw.rating;
+    out<<endl<<"data de infectare";
+    out<<endl<<"zi";
+    out<<mw.zi;
+    out<<endl<<"luna";
+    out<<mw.luna;
+    out<<endl<<"an";
+    out<<mw.an;
+
+    out<<endl<<"numele virusului";
+
+    for(int i=0;i<mw.nume.size();i++)
+    {   out<<mw.nume[i];
+    }
+    out<<"metoda de infectare"<<endl;
+    out<<mw.metifect;
+    out<<"registrii"<<endl;
+    for(int i=0;i<mw.registrii.size();i++)
+    {
+
+        out<<mw.registrii[i];
+    }
+    return out;
+}
+class rootkit:public virtual malware
+{
+
+protected:
+    vector<string>listaimporturi;
+    vector<string>stringsemnif;
+    friend istream& operator >>(istream& in, rootkit& rk);
+    friend ostream& operator <<(ostream& out, const rootkit& rk);
+public:
+    void calcrating()
+    {
+        for(auto d:listaimporturi)
+        {
+            if( d=="ntoskrnl.exe")
+                rating=rating*2;
+
+        }
+        for(auto d:stringsemnif)
+        {
+            if(d=="System Service Descriptor Table" || d=="SSDT" || d=="NtCreateFile" )
+                rating=rating+100;
+        }
+
+
+    }
+    rootkit():
+        listaimporturi(),
+        stringsemnif(),
+        malware(){}
+    rootkit(vector<string> listaimporturi1, vector<string>stringsemnif1,float rating, int zi, int luna , int an, vector<string> nume,string metifect,vector<string>registrii):
+        listaimporturi(listaimporturi1),
+        stringsemnif(stringsemnif1),
+        malware(rating,zi,luna,an,nume,metifect,registrii){}
+    rootkit(const rootkit& rk)=default;
+    rootkit& operator=(const rootkit& rk)=default;
+    ~rootkit(){}
+
+
+};
+
+istream& operator >>(istream& in, rootkit& rk)
+{
+    in>>(malware&)rk;
+    cout<<"nr de importuri din lista";
+    int n;
+    in>>n;
+    cout<<"importurile din lista";
+    string c;
+    for(int i=0;i<n;i++)
+    {
+        in>>c;
+        rk.listaimporturi.push_back(c);
+    }
+    cout<<"nr de striguri semnificative";
+    int m;
+    in>>m;
+    for(int i=0;i<m;i++)
+    {
+        in>>c;
+        rk.stringsemnif.push_back(c);
+    }
+    return in;
+}
+ostream& operator <<(ostream& out, const rootkit& rk)
+{
+    out<<(malware&)rk;
+
+    cout<<"importurile din lista";
+    string c;
+    for(int i=0;i<rk.listaimporturi.size();i++)
+    {
+
+        out<<rk.listaimporturi[i];
+    }
+
+    for(int i=0;i<rk.stringsemnif.size();i++)
+    {
+      out<<rk.stringsemnif[i];
+    }
+    return out;
+}
+
+class keylogger:public virtual malware
+{
+protected:
+    vector<string>functiifol;
+    vector<string>tastespec;
+    friend istream& operator >>(istream& in, keylogger& kl);
+    friend ostream& operator <<(ostream& out, const keylogger& kl);
+public:
+    void calcrating()
+    {
+        for(auto d:tastespec)
+        {
+            if( d=="[UP]" ||d =="[Num Lock]" || d=="[Down]"|| d=="[Right]"||d =="[UP]" || d=="[Left]"|| d=="[Right]" || d=="[PageDown]")
+                rating=rating+10;
+
+        }
+        for(auto d:functiifol)
+        {
+            if(d=="CreateFileW" || d=="OpenProcess" || d=="“ReadFile”" || d=="“WriteFile" || d=="“RegisterHotKey”" ||d=="“SetWindowsHookEx”")
+                rating=rating+30;
+        }
+    }
+    keylogger():
+        functiifol(),
+        tastespec(),
+        malware(){}
+    keylogger(vector<string>functiifol1, vector<string>tastespec1,float rating, int zi, int luna , int an, vector<string> nume,string metifect,vector<string>registrii,vector<string> listaimporturi1, vector<string>stringsemnif1):
+        functiifol(functiifol1),
+        tastespec(tastespec),
+        malware(rating,zi,luna, an, nume,metifect,registrii){}
+    keylogger(const keylogger& kl)=default;
+    keylogger& operator =(const keylogger& kl)=default;
+    ~keylogger(){}
+
+};
+istream& operator >>(istream& in, keylogger& kl)
+{
+    in>>(malware&)kl;
+    cout<<"nr de functii folosite";
+    int n;
+    in>>n;
+    cout<<"functiile folosite";
+    string c;
+    for(int i=0;i<n;i++)
+    {
+        in>>c;
+        kl.functiifol.push_back(c);
+    }
+    cout<<"nr de taste(macro)";
+    int m;
+    in>>m;
+    for(int i=0;i<m;i++)
+    {
+        in>>c;
+        kl.tastespec.push_back(c);
+    }
+    return in;
+}
+ostream& operator <<(ostream& out, const keylogger& kl)
+{
+    out<<(malware&)kl;
+
+
+    cout<<"functiile folosite";
+    string c;
+    for(int i=0;i<kl.functiifol.size();i++)
+    {
+       cout<<kl.functiifol[i]<<" ";
+
+    }
+
+    for(int i=0;i<kl.tastespec.size();i++)
+    {
+
+        cout<<kl.tastespec[i]<<" ";
+    }
+    return out;
+}
+class kernelkeylogger:public rootkit,keylogger
+{
+private:
+bool ascundefisiere;
+bool ascunderegistrii;
+friend istream& operator >>(istream& in, kernelkeylogger& kkl);
+friend ostream& operator <<(ostream& out, const kernelkeylogger& kkl);
+public:
+    void calcrating()
+    {
+        for(auto d:tastespec)
+        {
+            if( d=="[UP]" ||d =="[Num Lock]" || d=="[Down]"|| d=="[Right]"||d =="[UP]" || d=="[Left]"|| d=="[Right]" || d=="[PageDown]")
+                rating=rating+10;
+
+        }
+        for(auto d:functiifol)
+        {
+            if(d=="CreateFileW" || d=="OpenProcess" || d=="“ReadFile”" || d=="“WriteFile" || d=="“RegisterHotKey”" ||d=="“SetWindowsHookEx”")
+                rating=rating+30;
+        }
+         for(auto d:listaimporturi)
+        {
+            if( d=="ntoskrnl.exe")
+                rating=rating*2;
+
+        }
+        for(auto d:stringsemnif)
+        {
+            if(d=="System Service Descriptor Table" || d=="SSDT" || d=="NtCreateFile" )
+                rating=rating+100;
+        }
+        if(ascundefisiere)
+            rating=rating+20;
+        if(ascunderegistrii)
+            rating=rating+30;
+
+    }
+    kernelkeylogger():
+        ascundefisiere(1),          ///am pus by default ca ascunde fisiere si registrii [1]-da [0]-nu
+        ascunderegistrii(1),
+        rootkit(),
+        keylogger(){}
+    kernelkeylogger(bool ascundefisiere1,bool ascunderegistrii1,float rating, int zi, int luna , int an, vector<string> nume,string metifect,vector<string>registrii,vector<string>functiifol1, vector<string>tastespec1):
+        ascundefisiere(ascundefisiere1),
+        ascunderegistrii(ascunderegistrii1),
+        keylogger(functiifol,tastespec,rating,zi,luna,an,nume,metifect,registrii,listaimporturi,stringsemnif),
+        rootkit(listaimporturi,stringsemnif,rating,zi,luna,an,nume,metifect,registrii)
+        {}
+    kernelkeylogger(const kernelkeylogger& kkl)=default;
+    kernelkeylogger& operator =(const kernelkeylogger& kkl)=default;
+    ~kernelkeylogger(){}
+
+
+};
+istream& operator >>(istream& in, kernelkeylogger& kkl)
+{
+    in>>(rootkit&)kkl;
+    in>>(keylogger&)kkl;
+    cout<<endl<<"Ascunde fisiere? [1]-da [0]-nu"<<endl;
+    in>>kkl.ascundefisiere;
+     cout<<endl<<"Ascunde registrii? [1]-da [0]-nu"<<endl;
+    in>>kkl.ascunderegistrii;
+    return in ;
+}
+ostream& operator <<(ostream& out, const kernelkeylogger& kkl)
+{
+     out<<(rootkit&)kkl;
+    out<<(keylogger&)kkl;
+    out<<endl<<"Ascunde fisiere? [1]-da [0]-nu"<<endl;
+    out<<kkl.ascundefisiere;
+     out<<endl<<"Ascunde registrii? [1]-da [0]-nu"<<endl;
+    out<<kkl.ascunderegistrii;
+    return out;
+}
+class ransomware:public malware
+{
+private:
+    float ratingcript;
+    float ratingobsc;
+    friend istream& operator >>(istream& in, ransomware& ran);
+friend ostream& operator <<(ostream& out, const ransomware& ran);
+public:
+    void calcrating()
+    {
+        rating=rating+ratingcript+ratingobsc;
+    }
+    ransomware():
+        ratingcript(0),
+        ratingobsc(0),
+        malware(){}
+    ransomware(float ratingcript1,float ratingobsc1,float rating, int zi, int luna , int an, vector<string> nume,string metifect,vector<string>registrii):
+      ratingcript(ratingcript1),
+      ratingobsc(ratingobsc1),
+      malware(rating,zi,luna , an , nume, metifect,registrii)  {}
+      ransomware(const ransomware& ran)=default;
+      ransomware& operator =( const ransomware& ran)=default;
+      ~ransomware(){}
+
+};
+istream& operator >>(istream& in, ransomware& ran)
+{
+    in>>(malware&)ran;
+    cout<<endl<<"rating criptare";
+    in>>ran.ratingcript;
+    cout<<endl<<"rating obfuscare";
+    in>>ran.ratingobsc;
+    return in;
+}
+ostream& operator <<(ostream& out, const ransomware& ran)
+{
+    out<<(malware&)ran;
+    out<<endl<<"rating criptare";
+    out<<ran.ratingcript;
+    out<<endl<<"rating obfuscare";
+    out<<ran.ratingobsc;
+    return out;
+}
+class computer
+{
+private:
+    bool infectat;
+    const int idpc;
+    static int contorid;
+    vector<malware>listavirusi;
+    float ratingfinal;
+friend istream& operator >>(istream& in, computer& c);
+friend ostream& operator <<(ostream& out, const computer& c);
+public:
+    computer():
+        idpc(contorid++),
+        listavirusi(),
+        ratingfinal(0),
+        infectat(0){}/// by default nu e infectat
+    computer(vector<malware>listavirusi1,float ratingfinal1,bool infectat1):
+        idpc(contorid++),
+        listavirusi(listavirusi1),ratingfinal(ratingfinal1),infectat(infectat1)
+        {}
+        computer( const computer& c)=default;
+        computer& operator =( const computer& c)=default;
+        ~computer(){}
+};
+int computer::contorid=1;
+istream& operator >>(istream& in, computer& c)
+{   cout<<endl<<"Este calculatorul infectat? [1-da] [0-nu]";
+    in>>c.infectat;
+    if(c.infectat)
+    {cout<<endl<<"nr virusi in calculator: ";
+    int n ;in>>n;
+    cout<<endl<<"lista malware: ";
+    for(int i=0;i<n;i++)
+    {
+        malware mw;
+        in>>mw;
+        c.listavirusi.push_back(mw);
+    }}
+    else
+        cout<<endl<<"Calculatorul nu este infectat";
+
+
+
+    return in ;
+}
+ostream& operator <<(ostream& out, const computer& c)
+{
+    if(c.infectat)
+    {out<<endl<<"lista malware: ";
+    for(int i=0;i<c.listavirusi.size();i++)
+    {
+
+        cout<<c.listavirusi[i];
+    }}
+    else cout<<endl<<"Nu e infectat";
+    return out;
+}
+
+
+
+class Menu
+{
+private:
+
+    Menu();
+    Menu(const Menu&) = delete;
+    Menu& operator=(const Menu&) = delete;
+
+public:
+
+    void run();
+
+public:
+
+    static Menu* get_instance();
+    static void delete_instance();
+
+private:
+
+    vector<pair<string, function<void()>>> alegeri;
+
+private:
+
+    static Menu* g_instance;
+};
+
+Menu* Menu::g_instance = nullptr;
+
+Menu::Menu()
+{
+    alegeri.push_back(make_pair("Demo", [&]()
+    {
+
+    }));
+
+}
+
+void Menu::run()
+{
+    bool running = true;
+
+    while (running)
+    {
+        try
+        {
+            int k;
+
+            cout << "Alege " << endl;
+            for (int i = 0; i < alegeri.size(); i++)
+                cout << i << ") " << alegeri[i].first << endl;
+            cout << alegeri.size() << ") Inchidere" << endl;
+
+            cin >> k;
+            if (k < 0 || k > alegeri.size())
+                throw runtime_error("Ai introdus gresit");
+
+            if (k == alegeri.size())
+            {
+                running = false;
+                continue;
+            }
+
+            alegeri[k].second();
+        }
+        catch(const exception& e)
+        {
+            cout << "Am gasit  problema: " << e.what() << endl;
+        }
+
+    }
+}
+Menu* Menu::get_instance()
+{
+    if (!g_instance)
+        g_instance = new Menu();
+
+    return g_instance;
+}
+
+void Menu::delete_instance()
+{
+    delete g_instance;
+    g_instance = nullptr;
+}
+int main ()
+{
+
+     Menu::get_instance()->run();
+    Menu::delete_instance();
+    return 0;
+}
+
+
