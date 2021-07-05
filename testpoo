@@ -1,0 +1,438 @@
+#include<iostream>
+#include<vector>
+#include<string>
+#include<functional>
+#include<algorithm>
+using namespace std;
+class concurent
+{
+private:
+    const int nrasteptare;
+    static int contorid;
+    bool primadoi;
+    float medexmate;
+    string nume;
+    string serie;
+    string ci;
+    float nota_proba_scrisa;
+    float nota_proba_orala;
+    float medbac;
+    float medabsolvire;
+    string studiiabsolvite;
+    friend istream& operator>>(istream& in, concurent& c);
+    friend ostream& operator<<(ostream& out, const concurent& c);
+public:
+    float get_nota_proba_scrisa(){return this->nota_proba_scrisa;}
+    float get_medbac(){return this->medbac;}
+
+    concurent():
+        nrasteptare(contorid++),
+        nume("anonim"),
+        serie("neintrodusa"),
+        ci("inexistent"),
+        primadoi(0),
+        medexmate(0),
+        medbac(0),
+        medabsolvire(0),
+        studiiabsolvite(""),
+         nota_proba_scrisa(0),
+         nota_proba_orala(0)
+
+        {}
+        concurent(string nume1, string serie1, string ci1, float medbac1,bool primadoi1,float medexmate1,float medabsolvire1,string studiiabsolvite1, float nota_proba_orala1, float nota_proba_scrisa1):
+             nrasteptare(contorid++),
+            nume(nume1),
+            serie(serie1),
+            ci(ci1),
+            medbac(medbac1),
+            primadoi(primadoi1),
+            medexmate(medexmate1),
+            medabsolvire(medabsolvire1),
+            studiiabsolvite(studiiabsolvite1),
+            nota_proba_scrisa(nota_proba_scrisa1),
+            nota_proba_orala(nota_proba_orala1){}
+        concurent& operator=(const concurent& c){
+            if(this!=&c)
+            {
+               this-> nume=c.nume;
+               this-> serie=c.serie;
+               this->ci=c.ci;
+               this->primadoi=c.primadoi;
+               this->medexmate=c.medexmate;
+               this->medabsolvire=c.medabsolvire;
+               this->studiiabsolvite=c.studiiabsolvite;
+               this->nota_proba_orala=c.nota_proba_orala;
+               this->nota_proba_scrisa=c.nota_proba_scrisa;
+
+            }
+
+        }
+        concurent (  concurent& c)=default;
+        ~concurent(){}
+
+};
+int concurent::contorid=1;
+istream& operator>>(istream& in, concurent& c)
+{
+    cout<<"Numele concurentului este: "<<endl;
+    in>>c.nume;
+    cout<<"Seria concurentului este: "<<endl;
+    in>>c.serie;
+    cout<<"ID concurentului este: "<<endl;
+    in>>c.ci;
+    cout<<"Studentul este la prima sau a doua facultate ? [0-prima/1- a doua]";
+    in>>c.primadoi;
+    if(c.primadoi==0)
+    {
+        cout<<endl<<"Nota la examenul de matematica din bac: ";
+        in>>c.medexmate;
+        if(c.medexmate)
+        {
+            cout<<"media de la bac a concurentului este: "<<endl;
+    in>>c.medbac;
+        }
+        else
+            cout<<"STUDENTUL NU ESTE VALID"<<endl;
+
+    }
+    if(c.primadoi==1)
+    {
+        cout<<"Media de absolvire a studentului este: "<<endl;
+        in>>c.medabsolvire;
+        cout<<"absolving facultatea: "<<endl;
+        in>>c.studiiabsolvite;
+    }
+
+    return in;
+}
+ostream& operator<<(ostream& out, const concurent& c)
+{
+    out<<endl;
+    out<<c.nrasteptare;
+    out<<endl;
+    out<<"Numele concurentului este: "<<endl;
+    out<<c.nume;
+    out<<"Seria concurentului este: "<<endl;
+    out<<c.serie;
+    out<<"ID concurentului este: "<<endl;
+    out<<c.ci;
+    if(c.primadoi==0)
+        {out<<"media de la bac a concurentului este: "<<endl;
+        out<<c.medbac;
+        if(c.medexmate)
+            out<<"STUDENTUL ESTE LEGITIM PENTRU A CANDIDA AVAND MEDIA LA EXAMNU DE MATE "<<c.medexmate<<endl;
+        else
+            out<<"STUDENTUL ESTE ILEGITIM"<<endl;
+        }
+    if(c.primadoi==1)
+    {
+            out<<c.studiiabsolvite<<" are media "<<c.medabsolvire<<endl;
+    }
+    return out;
+}
+class interfata{
+virtual void examen()=0;
+
+};
+
+class progstudii:public interfata
+{
+private:
+    string numefac;
+    int nrlocid;
+    int nrlocif;
+    int nrloctaxa;
+      friend istream& operator>>(istream& in, progstudii& ps);
+    friend ostream& operator<<(ostream& out, const progstudii& ps);
+public:
+    progstudii():
+        numefac(""),
+        nrlocid(0),
+        nrlocif(0),
+        nrloctaxa(0){}
+    progstudii(string numefac1, int nrlocid1,int nrlocif1, int nrloctaxa1):
+        numefac(numefac1),
+        nrlocid(nrlocid1),
+        nrlocif(nrlocif1),
+        nrloctaxa(nrloctaxa1){}
+    progstudii& operator =(const progstudii& ps)=default;
+    progstudii( const  progstudii& ps)=default;
+    ~progstudii(){}
+};
+   istream& operator>>(istream& in, progstudii& ps)
+  {
+      cout<<endl<<"Nume facultate: ";
+      in>>ps.numefac;
+      cout<<endl<<"nr locuri ID: ";
+      in>>ps.nrlocid;
+      cout<<endl<<"nr locuri IF: ";
+      in>>ps.nrlocif;
+      cout<<endl<<"nr locuri taxa: ";
+      in>>ps.nrloctaxa;
+      return in;
+  }
+     ostream& operator<<(ostream& out, const progstudii& ps)
+     {
+ out<<endl<<"Nume facultate: ";
+      out<<ps.numefac;
+      out<<endl<<"nr locuri ID: ";
+      out<<ps.nrlocid;
+      out<<endl<<"nr locuri IF: ";
+      out<<ps.nrlocif;
+    out<<endl<<"nr locuri taxa: ";
+      out<<ps.nrloctaxa;
+      return out;
+     }
+
+
+class IF:public progstudii
+{
+private:
+    int durata;
+    string tip_proba;
+    concurent c;
+    friend istream& operator >>(istream& in, IF& f);
+    friend ostream& operator <<(ostream& out, const IF& f);
+public:
+    IF():
+        durata(0),
+        tip_proba(""),
+        c(){}
+    IF(int durata1, string tip_proba1,string numefac, int nrlocid,int nrlocif,int nrloctaxa):
+        durata(durata1),
+        tip_proba(tip_proba1),
+        progstudii(numefac,nrlocid,nrlocif,nrloctaxa){}
+    IF(const IF& f)=default;
+    IF& operator=(const IF& f)=default;
+    ~IF(){}
+    void examen()
+    {
+        float medie_admitere;
+        medie_admitere=0.8*c.get_nota_proba_scrisa()+0.4*c.get_medbac();
+    }
+
+};
+istream& operator>>(istream& in, IF& f)
+{
+    in>>(progstudii&)f;
+    cout<<endl<<"Durata examenului este"<<endl;
+    in>>f.durata;
+    cout<<endl<<"Examenul este unul "<<endl;
+    in>>f.tip_proba;
+    return in;
+}
+ostream& operator <<(ostream& out, const IF& f)
+{
+   out<<(progstudii&)f;
+    out<<endl<<"Durata examenului este"<<endl;
+    out<<f.durata;
+    out<<endl<<"Examenul este unul "<<endl;
+    out<<f.tip_proba;
+    return out;
+}
+class ID
+{
+
+};
+
+
+class listaconcurenti
+{
+private:
+    vector<concurent> lconc;
+    friend istream& operator>>(istream& in, listaconcurenti& lc);
+    friend ostream& operator<<(ostream& out,const listaconcurenti& lc);
+    friend listaconcurenti& operator +( concurent& c,  listaconcurenti& lc);
+public:
+    listaconcurenti(){}
+    listaconcurenti(vector<concurent>lconc1):lconc(lconc1){}
+    listaconcurenti(listaconcurenti& lc)=default;
+    listaconcurenti& operator=(const listaconcurenti& lc)=default;
+    ~listaconcurenti(){};           ///nu e nimic creat dinamic inafara vectorului care in face alocarea si dezalocarea(resizeul ) automat deci nu mai e nevoiie
+
+};
+
+istream& operator>>(istream& in, listaconcurenti& lc)
+{   cout<<endl<<"Numarul de studenti de pe lista: ";
+int n; in >>n;
+    cout<<endl<<"Lista tuturor concurentilor este: ";
+
+
+    for(int i=0;i<n;i ++)
+    { concurent c;
+        in>>c;
+        lc.lconc.push_back(c);
+    }
+
+    return in;
+}
+ostream & operator <<(ostream& out, const listaconcurenti &lc)
+{
+    out<<endl<<"Lista concurentilor este: ";
+    vector<int>::iterator it;
+    for(auto it=lc.lconc.begin();it!=lc.lconc.end();++it)
+        out<<*it;
+        return out;
+}
+listaconcurenti& operator +( concurent& c,  listaconcurenti& lc)
+{
+    lc.lconc.push_back(c);
+    return lc;
+}
+
+
+class Menu
+{
+private:
+
+    Menu();
+    Menu(const Menu&) = delete;
+    Menu& operator=(const Menu&) = delete;
+
+public:
+
+    void run();
+
+public:
+
+    static Menu* get_instance();
+    static void delete_instance();
+
+private:
+
+    vector<pair<string, function<void()>>> alegeri;
+
+private:
+
+    static Menu* g_instance;
+};
+
+Menu* Menu::g_instance = nullptr;
+
+Menu::Menu()
+{
+    alegeri.push_back(make_pair("Demo", [&]()
+    {
+
+    }));
+
+}
+
+void Menu::run()
+{
+    bool running = true;
+
+    while (running)
+    {
+        try
+        {
+            int k;
+
+            cout << "Alege " << endl;
+            for (int i = 0; i < alegeri.size(); i++)
+                cout << i << ") " << alegeri[i].first << endl;
+            cout << alegeri.size() << ") Inchidere" << endl;
+
+            cin >> k;
+            if (k < 0 || k > alegeri.size())
+                throw runtime_error("Ai introdus gresit");
+
+            if (k == alegeri.size())
+            {
+                running = false;
+                continue;
+            }
+
+            alegeri[k].second();
+        }
+        catch(const exception& e)
+        {
+            cout << "Am gasit  problema: " << e.what() << endl;
+        }
+
+    }
+}
+
+Menu* Menu::get_instance()
+{
+    if (!g_instance)
+        g_instance = new Menu();
+
+    return g_instance;
+}
+
+void Menu::delete_instance()
+{
+    delete g_instance;
+    g_instance = nullptr;
+}
+int main()
+{
+    //Menu::get_instance()->run();
+    //Menu::delete_instance();
+   // concurent c;
+    concurent c("filip","8834","23871301",9.51,0,10,10,"FMI",10,10);
+    concurent c1("damian","8834","23871301",9.51,0,10,10,"FMI",10,10);
+//    concurent c1(c);
+    //cin>>c;
+    //cout<<c;
+    vector<concurent> vc;
+    vc.push_back(c);
+    listaconcurenti lc(vc);
+
+    cout<<lc;
+lc=c1+lc;
+cout<<endl<<lc;
+
+
+    return 0;
+}
+
+
+///setter getter vector
+/*
+  vector<string> getsubst()
+    {
+        return this->subst;
+    }
+    void setsubst(vector<string>sb)
+    {
+        this->subst = sb;
+        for (int i = 0; i < subst.size(); i++)
+            cout << subst[i] << " ";
+    }
+*/
+///op = si cc
+/*
+   vaccin(const vaccin& vac) = default;
+    vaccin& operator=(const vaccin& vac) = default;
+*/
+///friend
+/*
+    friend istream& operator>>(istream& in,listacomenzi& lc);
+    friend ostream& operator<<(ostream& out, const listacomenzi& lc);
+    friend listacomenzi& operator +( comanda& c,  listacomenzi& lc);
+    friend listacomenzi& operator +( listacomenzi& lc,comanda& c);
+*/
+
+
+///operatori
+/*
+ listacomenzi& operator +=(comanda c);                                                              //+=
+    friend    listacomenzi& operator -(listacomenzi& lc, comanda& pula);                            //-
+    const listacomenzi& operator --();                                                              //-- post
+
+    const listacomenzi operator --(int);                                                           //-- pre
+    comanda operator[](int index);                                                                 //index
+    bool operator == (const listacomenzi&);                                                        //==
+*/
+/*
+ lc.listac.erase(std::remove(lc.listac.begin(), lc.listac.end(), pula), lc.listac.end());           ///imi trebuie == pe obiectu din interioru vectorului
+  if (!pret.empty())
+        {
+            pret.clear();                                                                               ///dezalocare vector
+            pret.shrink_to_fit();
+        }
+ */
+
+
